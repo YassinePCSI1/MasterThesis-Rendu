@@ -1,0 +1,5 @@
+row_strategy,col_strategy,payoff
+C,C,1800.0
+C,D,1500.0
+D,C,2024.9999
+D,D,1600.0

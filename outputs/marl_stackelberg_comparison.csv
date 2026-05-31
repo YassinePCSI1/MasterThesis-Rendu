@@ -1,0 +1,4 @@
+leader,static_leader_q,static_leader_price,marl_leader_q_mean,marl_leader_q_std,marl_converged_price_mean,marl_converged_price_std,marl_collusion_index_mean,marl_collusion_index_std,n_seeds
+US,30.0,55.0,29.6444,2.1983,54.9853,0.7278,-0.2507,0.0364,20.0
+OPEC,80.0,46.6667,74.0023,8.4724,48.1506,2.9126,-0.5925,0.1456,20.0
+RUS,50.0,51.6667,49.2046,5.5307,51.6161,1.9174,-0.4192,0.0959,20.0

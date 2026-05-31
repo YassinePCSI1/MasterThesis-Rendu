@@ -1,0 +1,1393 @@
+% Extracted from part_III_IV.tex for inclusion in main.tex
+\setcounter{section}{3}
+
+\section{Multi-Agent Reinforcement Learning Under Imperfect Monitoring}
+\label{sec:marl}
+% ============================================================
+
+The analytical frameworks of Sections~2 and~3 share a common
+simplifying premise: cooperation is either characterised under
+common knowledge of primitives (demand intercept, cost vector,
+rivals' strategies) or governed by a population-level adjustment
+rule that operates outside the agents' own decision problem.
+Neither abstraction corresponds to the empirical reality of
+crude-oil markets, where producers observe a continuously quoted
+benchmark price but receive official production figures with
+substantial lags, frequent revisions, and non-trivial cross-agency
+disagreement.\footnote{Monthly output estimates published by OPEC,
+the International Energy Agency, and the U.S.\ Energy Information
+Administration routinely diverge by several hundred thousand barrels
+per day for the same reference month, with revisions arriving many
+quarters after the fact. Brent, WTI, and Dubai benchmark prices,
+by contrast, are quoted continuously and are available to all market
+participants in real time.}
+
+This section therefore asks a sharply delimited empirical question:
+can model-free algorithmic agents, which receive the
+realised market price as their sole feedback signal and never
+observe rivals' individual production, spontaneously converge to
+supra-competitive output levels? The question has acquired concrete
+regulatory urgency over the past five years. \citet{calvano2020}
+establish that two independent $\varepsilon$-greedy $Q$-learners
+in a differentiated Bertrand game reliably sustain supra-Nash
+pricing without any communication or programmed coordination.
+Subsequent contributions have extended that observation to richer
+architectures and sequential posted-price environments
+\citep{klein2021, asker2022, banchio2023}. Regulators have
+responded: California's AB~325, operative since January~2026,
+criminalises algorithmic intermediaries that ``facilitate price
+alignment'' \citep{dlapiper2025}; the European Commission has
+confirmed multiple active investigations \citep{nortonrose2025,loyensloeff2026};
+and the U.S.\ Department of Justice has publicly flagged the risk
+of ``fully automated cartels'' \citep{kavanagh2025}. The open
+empirical question motivating the present section is whether the
+\citeauthor{calvano2020} mechanism, documented in differentiated
+Bertrand competition, survives the translation to \emph{Cournot
+quantity competition with asymmetric costs and imperfect
+monitoring}, which is the institutional structure of OPEC+.
+
+\paragraph{Why the theory of Sections~2-3 leaves the question
+open.}
+The Folk Theorem is a result about existence, not
+selection. It guarantees that, for patient enough
+producers, a collusive path can be supported as a
+subgame-perfect equilibrium; it says nothing about which
+of the continuum of sustainable equilibria will actually be
+played. Classical analysis closes that indeterminacy by
+assumption, that is, by endowing agents with common knowledge of
+demand, costs, and rivals' strategies, and by letting them compute
+the punishment thresholds that deter deviation. Learning agents
+have none of these. They observe only the realised price, hold no
+model of the demand system, cannot anticipate a rival's
+best response, and revise behaviour by reinforcement rather than
+by strategic reasoning. The economically interesting question is
+therefore not whether cooperation is feasible, which the
+theory already settles, but whether and how it is
+selected by adaptive agents who cannot reason their way to
+it. If cooperation emerges, the next question is whether it is
+sustained by the Folk-Theorem mechanism (anticipated punishment)
+or by something else entirely. Anticipating our central result:
+cooperation does emerge, but the punishment mechanism the theory
+predicts does not, and that gap is the substantive economic
+contribution of this section.
+
+Five primary hypotheses, formulated before any large-budget run was
+initiated, organise the experimental programme. They serve as
+public pre-commitments against post-hoc selection of decision
+thresholds; all five are evaluated verbatim in the verdict matrix
+of Section~\ref{subsec:matrix}.
+
+\begin{enumerate}\itemsep0pt
+  \item[\textbf{H1.}] \emph{Triopoly collusion.}~The
+        greedy-rollout collusion index satisfies
+        $\CI_{\text{trio}} > 0.30$
+        (Section~\ref{subsec:headline}).
+  \item[\textbf{H2.}] \emph{Learner-count ordering.}~
+        $\CI_{\text{trio}} > \CI_{\text{duo}} >
+        \CI_{\text{single}}$, with non-overlapping $95\%$
+        confidence intervals
+        (Section~\ref{subsec:learners}).
+  \item[\textbf{H3.}] \emph{Folk-Theorem monotonicity.}~
+        Spearman $\rho(\gamma, \CI) > 0$ on the patience
+        sweep (Section~\ref{subsec:gamma}).
+  \item[\textbf{H4.}] \emph{Green-Porter punishment cycles.}~
+        Shock-driven retaliation phases are detected at
+        $\geq 2\sigma_P$ in the headline run
+        (Section~\ref{subsec:shocks}).
+  \item[\textbf{H5.}] \emph{Stackelberg recovery.}~The
+        leader-output learner reproduces the static leader
+        quantity within $\pm 20\%$
+        (Section~\ref{subsec:stack}).
+\end{enumerate}
+
+Departures from these hypotheses are reported as substantive
+findings in their own right, not reframed to preserve a positive
+narrative.
+
+\begin{table}[H]
+\centering
+\caption*{\textbf{Results at a glance.} Pre-registered verdicts, each
+developed in the section indicated and consolidated in the verdict
+matrix (Table~\ref{tab:matrix}). H4's shock-response operationalisation
+is met (\S\ref{subsec:shocks}); its three retaliation tests are
+not (\S\ref{subsec:falsification}), which is the section's central
+finding. \\[2pt] \badgelegend}
+\small
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{clcc}
+\toprule
+ & Pre-registered hypothesis & Verdict & Section \\
+\midrule
+\textbf{H1} & Triopoly collusion emerges & \vyes & \ref{subsec:headline} \\
+\textbf{H2} & More learners $\Rightarrow$ more collusion & \vyes & \ref{subsec:learners} \\
+\textbf{H3} & Collusion rises with patience $\gamma$ & \vyes & \ref{subsec:gamma} \\
+\textbf{H4} & Cooperation held by Folk-Theorem punishment & \vno & \ref{subsec:falsification} \\
+\textbf{H5} & Single learner recovers Stackelberg leader & \vpart & \ref{subsec:stack} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================
+\subsection{Algorithm, information structure, and protocol}
+\label{subsec:setup}
+% ============================================================
+
+\begin{notationbox}\small
+$\CI$ -- collusion index (Eq.~\eqref{eq:ci}): $0$ at static Nash,
+$1$ at the joint-profit cartel. \enspace
+$\CI^{\text{tail}}$ vs.\ $\CI^{\text{greedy}}$ -- tail-of-training
+($\varepsilon=0.05$) vs.\ frozen greedy-rollout ($\varepsilon=0$)
+estimator. \enspace
+$\sigma_P$ -- standard deviation of the rolling-mean price over the
+converged window. \enspace
+$\rho$ -- Spearman rank correlation (reciprocity tests). \enspace
+$n_{\text{seeds}}$ -- independent random-seed replications. \enspace
+$\gamma=\delta$ -- discount factor (algorithmic patience).
+\end{notationbox}
+
+\paragraph{Environment.}
+The stage game is the linear-Cournot triopoly calibrated in
+Section~\ref{sec:foundations}: inverse demand $P(Q) = a - bQ$ with $a = 140$, $b = 1$,
+and marginal costs $c_{\text{US}} = 45$, $c_{\text{OPEC}} = 20$,
+$c_{\text{RUS}} = 35$. Quantity action spaces are unconstrained
+unless otherwise stated. The market clears every period; each agent
+observes the common price and its own realised profit but not
+rivals' individual quantities. This price-only information
+structure is exactly the Green-Porter environment studied
+analytically in Section~\ref{subsec:greenporter}. Here, however,
+the agents are model-free learners who must discover the implicit
+rules of the game through repeated interaction, rather than agents
+endowed with a parametric model of the demand system.
+
+\paragraph{Algorithm.}
+Each agent runs an independent tabular $\varepsilon$-greedy
+$Q$-learner \citep{watkins1992}\citep[p.~??]{sutton2018}:
+\begin{equation}
+  \label{eq:qlearn}
+  Q_i(s_t, a_t) \;\leftarrow\; Q_i(s_t, a_t)
+    \;+\; \alpha\bigl[\,r_{i,t}
+      + \gamma\max_{a'} Q_i(s_{t+1}, a')
+      - Q_i(s_t, a_t)\,\bigr],
+\end{equation}
+where $r_{i,t} = (P_t - c_i)\,q_{i,t}$ is the per-period profit,
+$\alpha \in (0,1)$ is the learning rate, and $\gamma \in (0,1)$
+is the discount factor, the algorithmic counterpart of the
+patience parameter $\delta$ in the Folk-Theorem analysis of
+Section~\ref{subsec:folk}. Agents are deliberately kept independent: no shared
+value function, no communication channel, no centralised reward
+signal.
+
+\paragraph{State and action spaces.}
+The private state $s_t^i = (\hat{P}_t, \hat{q}_t^{\,i})$ encodes
+the last-period market price and the agent's own last-period
+output, discretised into $12$ price bins and $10$ own-quantity
+bins. Actions are drawn from a $15$-point grid spanning
+$[0, q_i^{\max}]$, where $q_i^{\max}$ equals twice the
+cooperative cartel quota, a range wide enough to accommodate both
+joint-profit maximisation and outright market flooding. Exploration
+follows a geometric annealing schedule:
+$\varepsilon_t = \max\!\{\varepsilon_{\text{end}},\,
+\varepsilon_{\text{start}}\cdot\rho^{\,t}\}$,
+with $(\varepsilon_{\text{start}}, \varepsilon_{\text{end}},
+\rho) = (0.30,\, 0.05,\, 0.99)$ and $\alpha = 0.15$.
+
+\paragraph{Calibrated parameters versus algorithmic
+hyperparameters.}
+We draw a sharp distinction between two classes of inputs. The
+economic parameters, that is, the demand intercept and
+slope $(a,b)$, the marginal-cost vector, and the discount factor
+$\delta=\gamma$, are calibrated to empirical sources
+(\citealp{dallasfed2026,bp2022,imf2021}; see Section~\ref{sec:foundations}) and carry economic meaning that can be
+disciplined by data. The algorithmic hyperparameters, that
+is, the learning rate $\alpha$, the exploration schedule
+$(\varepsilon_{\text{start}},\varepsilon_{\text{end}},\rho)$, and
+the grid resolution, have no empirical counterpart: they describe
+how an artificial agent learns, not how the oil market behaves.
+We therefore make no claim to ``estimate'' them. Instead, we fix
+each at its literature-standard default and sweep it across
+the recommended range in the robustness battery of
+Section~\ref{subsec:robustness}, reporting the headline finding as
+robust precisely because it survives every value rather than
+because any single value is correct. This is the appropriate
+standard of justification for a parameter that is computational
+rather than economic.
+
+\paragraph{Outcome metric.}
+The unifying metric across Sections~2-4 is the collusion index
+\begin{equation}
+  \label{eq:ci}
+  \CI \;=\;
+    \frac{\bar{P} - P^{\,\text{Nash}}}
+         {P^{\,\text{cartel}} - P^{\,\text{Nash}}},
+\end{equation}
+where $\bar{P}$ is the mean price over the final $20\%$ of the
+training horizon. By construction, $\CI = 0$ under the static
+Cournot-Nash allocation, $\CI = 1$ under the joint-profit cartel,
+and $\CI \in (0,1)$ on the segment of tacit cooperation. Values
+below zero (encountered in the single-learner and duopoly regimes
+documented below) identify predatory pricing below static Nash.
+
+\paragraph{Aggregation.}
+Every table and figure reports a multi-seed mean with either a
+per-seed standard deviation (and the corresponding
+normal-approximation $95\%$ confidence interval) for scalar
+quantities, or a per-step $2.5\%$-$97.5\%$ percentile band for
+trajectory quantities. The headline triopoly batch of
+Section~\ref{subsec:headline} draws on $n_{\text{seeds}} = 50$;
+the robustness battery of
+Sections~\ref{subsec:gamma}-\ref{subsec:stack} uses
+$n_{\text{seeds}} = 20$ at half the headline horizon
+($750\,\text{episodes} \times 50\,\text{steps}$); the cycle and
+reciprocity checks of Sections~\ref{subsec:cycles} and
+\ref{subsec:reciprocity} use $n_{\text{seeds}} = 5$ at the full
+headline budget.
+
+% ============================================================
+\subsection{Headline experiment: three independent Q-learners}
+\label{subsec:headline}
+% ============================================================
+
+\emph{In brief:} across $50$ independent seeds of the calibrated
+triopoly, three price-only learners collude without any coordination
+device, the cooperative basin is reached on $\mathbf{94\%}$ of seeds
+with a mean greedy collusion index of $\mathbf{0.73}$ ($95\%$ CI
+$[0.62,\,0.84]$), clearing the pre-registered H1 threshold of $0.30$
+(\textbf{H1 met}).
+
+Under the Folk Theorem of Section~\ref{subsec:folk} and the Green-Porter
+framework of Section~\ref{subsec:greenporter}, three sufficiently patient agents
+observing the realised price can in principle sustain any
+cooperative output above static Nash, provided the discount factor
+exceeds the binding critical patience $\delta^\ast$ and imperfect
+monitoring does not destroy cooperation in expectation. Tabular
+$Q$-learning is the minimal model-free algorithm that, upon
+convergence, can implement such a reciprocity rule. Whether it
+actually discovers a cooperative basin from random
+initialisation and price-only feedback is the first question the
+experiment addresses.
+
+The triopoly is trained from scratch for $1{,}500$ episodes of
+$50$ steps each on $50$ independent random seeds. All
+hyper-parameters are as in Section~\ref{subsec:setup}. Two
+estimators of the converged collusion index are computed: a
+\emph{tail-of-training} estimator (mean over the final $20\%$ of
+training, which still carries $\varepsilon = 0.05$ exploration
+noise) and a \emph{greedy rollout} estimator (Q-tables frozen,
+$\varepsilon = 0$, re-evaluated on $20$ noise-free rollouts of
+$50$ steps each). Pre-registered inference is based on the greedy
+estimator, which is directly interpretable as the converged
+policy's implied market outcome.
+
+\begin{criterion*}
+Tacit algorithmic cooperation is declared to emerge iff the
+large-budget run satisfies all three of: \textup{(i)} the $95\%$
+CI on the mean greedy $\CI$ is strictly above~$0$;
+\textup{(ii)} its lower bound is $\geq 0.30$; and
+\textup{(iii)} the per-seed standard deviation of $\bar{P}$ over
+the converged window is $\leq 5\,\$\text{/bbl}$.
+\end{criterion*}
+
+Table~\ref{tab:headline} reports the central statistics of the
+$50$-seed batch.
+
+\begin{verdict*}
+Criteria \textup{(i)} and \textup{(ii)} are satisfied: the $95\%$
+CI on the mean greedy $\CI$ is $[0.62,\,0.84]$, strictly above
+zero with a lower bound exceeding $0.30$. Criterion~\textup{(iii)}
+is satisfied on the tail estimator
+($\sigma_{\bar{P}} = 3.60 < 5\,\$\text{/bbl}$).
+\textbf{H1~is~met.}
+\end{verdict*}
+
+Two features of the data merit closer examination before this
+finding is interpreted. First, the random-policy
+baseline (uniform draws on the $15$-level action grid) yields
+$\CI = 0.04$ ($95\%$ CI $[-0.04,\,0.12]$), confirming
+that the cooperative attractor is not a discretisation artefact of
+the output grid. Second, $74\%$ of state-action cells are visited
+fewer than five times. This high under-visitation rate is a
+structural property of the discretisation rather than an artefact
+of insufficient training; its implications for the mechanism
+interpretation are taken up in
+Section~\ref{subsec:reciprocity}.
+
+% --- TABLE 1 ---
+
+% ============================================================
+\subsection{Per-seed distribution and multi-basin structure}
+\label{subsec:basins}
+% ============================================================
+
+A cross-seed mean of $\CI^{\text{greedy}} = 0.73$
+compresses fifty independent training histories into a single
+number, and the compression is misleading. Figure~\ref{fig:basins}
+makes the underlying distribution explicit: independent tabular
+$Q$-learning does not converge to a unique equilibrium: it
+converges to a distribution over qualitatively distinct
+attractors. Table~\ref{tab:basins} classifies each seed by its
+greedy collusion index into four basins.
+
+This bimodality reframes the headline finding along two
+dimensions. First, the tail-of-training estimator (cross-seed
+standard deviation~$0.18$) systematically understates the
+cross-seed dispersion of the greedy estimator ($0.39$), because
+residual $\varepsilon$-noise smooths each agent's effective policy
+across nearby $Q$-cells. Both estimators should therefore be
+reported side by side; the gap between them is itself a diagnostic
+of under-training.
+
+Second, when the empirical distribution is bimodal, the
+appropriate summary is not the cross-seed mean but the
+proportion of seeds reaching a cooperative basin.
+Applying a \citet{wilson1927} score interval, the standard
+correction for normal-approximation breakdown at extreme
+proportions, applied to $\Pr[\CI \geq 0.20]$ yields the comparison in
+Table~\ref{tab:wilson}. The triopoly and duopoly Wilson intervals
+do not overlap on either estimator (lower bound $0.84$ versus
+upper bound $0.07$): with three learners, the probability of
+reaching a cooperative basin is bounded below by $0.84$;
+replacing a single learner with a rational myopic best-responder
+collapses that probability below $0.07$.
+
+The cooperative basin is therefore not a property of the action
+grid, the static benchmark, or the hyper-parameter configuration.
+It is caused by all players learning simultaneously. The
+reformulated headline statement, which is robust to the choice of
+estimator and invariant to the bimodality, reads:
+
+\begin{quote}
+  \itshape
+  Under price-only information and independent tabular
+  $Q$-learning, the probability that a triopoly of independent
+  learners reaches a cooperative basin ($\CI \geq 0.20$) is
+  $0.94$,\footnote{This cross-seed basin frequency is a distinct
+  quantity from the within-run cooperative-regime time fraction
+  (also $94\%$) reported for the Green-Porter AR(1) simulation in
+  Section~\ref{subsec:greenporter}; the numerical coincidence is
+  incidental.} with a Wilson $95\%$ interval of $[0.84,\,0.98]$. In
+  a duopoly where one agent is replaced by a myopic
+  best-responder, this probability is $0.00$
+  ($[0.00,\,0.07]$).
+\end{quote}
+
+% --- TABLE 2 ---
+
+% --- TABLE 3 ---
+
+% ============================================================
+\subsection{Duopoly robustness check}
+\label{subsec:duopoly}
+% ============================================================
+
+\emph{In brief:} replacing one learner with a static Cournot
+best-responder (OPEC and the US learning, Russia myopic) does not merely
+weaken cooperation but flips the outcome to a predatory
+equilibrium ($\CI = -0.21$, $95\%$ CI $[-0.24,\,-0.18]$), confirming
+that the cooperative basin is a property of all-player learning rather
+than of the environment.
+
+To isolate the role of all-player learning, the headline
+experiment is replicated with only two learning agents (OPEC
+and the US) while Russia plays the static Cournot best-response
+at every step. The pre-registered criterion requires the duopoly
+$95\%$ CI on $\CI$ to sit strictly below the triopoly CI; overlap
+would render the regime contrast undetectable.
+
+The duopoly yields a mean collusion index of $-0.21 \pm 0.10$
+($95\%$ CI $[-0.24,\,-0.18]$) and a mean converged price of
+$55.81 \pm 1.98\,\$\text{/bbl}$ over $50$ seeds. Against the
+triopoly headline ($\CI = 0.63$, $95\%$ CI $[0.57,\,0.67]$), the
+two intervals are disjoint by more than $0.80$ units. The
+pre-registered criterion is satisfied.
+
+The substantive point is stronger than the interval comparison
+suggests. The duopoly does not deliver a weaker form of
+cooperation: it delivers a predatory equilibrium, with
+prices roughly four dollars below static Nash. The presence of
+even one myopic best-responder is sufficient to destroy the
+cooperative basin entirely; a finding examined in further detail
+in Section~\ref{subsec:learners}.
+
+% ============================================================
+\subsection{Falsification of explicit Folk-Theorem retaliation}
+\label{subsec:falsification}
+% ============================================================
+
+\emph{In brief:} three independent tests of whether cooperation is
+sustained by anticipated punishment, as the Folk Theorem requires forced-deviation decomposition, $\sigma$-calibrated cycle detection, and
+Spearman reciprocity at fine and coarse grids, all reject explicit
+retaliation, identifying the cooperative outcome as a path-dependent
+lock-in rather than a punishment equilibrium.
+
+The preceding sections establish that cooperation emerges and is
+causally attributable to all-player learning. They do not,
+however, identify the mechanism by which it is sustained. The
+Friedman-Abreu taxonomy offers the canonical candidate: rational
+cooperators punish deviators by reverting to Nash (grim trigger)
+or to a temporary flooding phase \citep{abreu1986}. If the
+cooperative basins documented above are algorithmic realisations
+of such an equilibrium, three distinct empirical signatures should
+be detectable: a non-trivial strategic share in the price
+response to a forced deviation; \emph{$\sigma$-calibrated
+punishment cycles} of detectable amplitude and frequency; and a
+state-conditioned negative correlation between observed
+prices and subsequent outputs. Each test is applied in turn.
+
+% ------------------------------------------------------------
+\subsubsection{Forced-deviation decomposition}
+\label{subsec:forced}
+% ------------------------------------------------------------
+
+Pinning one learner's output at a Nash-like level for a fixed
+window is the algorithmic analogue of the grim-trigger experiment
+of Section~\ref{subsec:folk}. Two distinct price effects are predicted. A
+mechanical drop $\Delta P_{\text{mech}} = b\,\Delta
+q_{\text{dev}}$ follows directly from the deviator's additional
+supply meeting the inverse-demand slope; this is not evidence of
+punishment. A strategic drop $\Delta P_{\text{strategic}}$,
+arising from non-deviators raising their own outputs in response,
+is the distinctive signature of algorithmic retaliation.
+
+OPEC's quantity is fixed at $q^{\text{forced}} = 40\,\text{mbd}$
+for $\Delta t = 1{,}875$ steps beginning at step $t_0 = 56{,}250$.
+Price and per-player quantities are aggregated over the pre-,
+during-, and post-window phases across $n_{\text{seeds}} = 20$.
+The strategic share is defined as
+\begin{equation}
+  \label{eq:strategic}
+  s_{\text{strategic}}
+    \;=\; 1 - \frac{b\,\Delta q_{\text{dev}}}
+                   {|\Delta P_{\text{obs}}|},
+\end{equation}
+where $\Delta q_{\text{dev}}$ is the deviator's pinned increment
+over its within-window mean. The pre-registered threshold is
+$s_{\text{strategic}} \geq 30\%$.
+
+Table~\ref{tab:forced} reports the multi-seed price and
+per-player quantities in each window. The observed price drop is
+$|\Delta P_{\text{obs}}| = 15.60\,\$\text{/bbl}$. The forced
+increment is $\Delta q_{\text{dev}} = 13.59\,\text{mbd}$,
+implying a mechanical contribution of $13.59\,\$\text{/bbl}$ and
+a residual strategic drop of $2.01\,\$\text{/bbl}$. The
+strategic share is therefore
+\begin{equation*}
+  s_{\text{strategic}}
+    \;=\; \frac{2.01}{15.60} \;=\; 0.129.
+\end{equation*}
+
+\begin{verdict*}
+The strategic share is $\mathbf{12.9\%}$, far below the pre-registered
+$30\%$ threshold. Non-deviators raise aggregate output by only
+$+2.00\,\text{mbd}$, roughly $0.13$ standard deviations of
+their pre-window output, an order of magnitude smaller than any
+Folk-Theorem grim-trigger response would predict.
+\textbf{Algorithmic retaliation is not detected. H4 fails on its
+forced-deviation operationalisation.}
+\end{verdict*}
+
+% --- TABLE 4 ---
+
+% ------------------------------------------------------------
+\subsubsection{Punishment-cycle detection}
+\label{subsec:cycles}
+% ------------------------------------------------------------
+
+Let $\sigma_P$ denote the empirical standard deviation of the
+rolling-mean price over the final $20\%$ of training. A
+$\sigma$-calibrated detector flags a punishment cycle when the
+price drops by at least $\max\{3\,\$\text{/bbl},\,2\sigma_P\}$
+below a local peak, recovers to within $1\sigma_P$ of that peak
+within a fixed look-ahead window, and the peak-to-trough phase
+lasts at least five steps. Anchoring the threshold to $\sigma_P$
+prevents the detector from triggering on random fluctuations
+within the converged noise band; a fixed-threshold predecessor
+($\text{drop} \geq 3\,\$\text{/bbl}$ absolute) fired
+approximately five false positives per $1{,}000$ steps in this
+setting.
+
+The Folk-Theorem mechanism is declared present iff: the detected
+frequency lies in $[0.2,\,2.0]$ cycles per $1{,}000$ steps; the
+mean drop is $\geq 3\sigma_P$; and the detection is reproducible
+in at least three of five test seeds.
+
+Table~\ref{tab:cycles} reports the per-seed cycle counts at the
+full headline budget ($75{,}000$ steps per seed,
+$n_{\text{seeds}} = 5$). The mean-drop criterion is met: the
+median drop of $11.57\,\$\text{/bbl}$ corresponds to
+approximately $3.9\sigma_P$; but the frequency and
+reproducibility criteria both fail. Only two of five seeds (302
+and 303, at $1.12$ and $0.45$ per $1{,}000$ steps) lie within
+the pre-registered band; the remaining three over-fire at
+$3.4$--$3.9$ per $1{,}000$, a signature that the
+$\sigma$-calibrated detector continues to capture exploration
+jitter at this training horizon.
+
+\begin{verdict*}
+Two of the three pre-registered sub-criteria are not met. The
+claim of detectable $\sigma$-calibrated punishment cycles is
+withdrawn. \textbf{H4 fails on its cycle-detection
+operationalisation.}
+\end{verdict*}
+
+% --- TABLE 5 ---
+
+% ------------------------------------------------------------
+\subsubsection{Spearman reciprocity at fine and coarse grids}
+\label{subsec:reciprocity}
+% ------------------------------------------------------------
+
+The final operationalisation of Folk-Theorem retaliation tests
+whether the converged policies exhibit a price-conditioned
+restraint: a positive correlation between the observed price at
+step $t$ and the agent's output at step $t+1$, consistent with
+the implicit rule ``high price $\Rightarrow$ maintain output;
+low price $\Rightarrow$ reduce output.'' Two complementary
+statistics are computed. The policy-level Spearman
+rank-correlates the greedy action $\arg\max_a Q(s,a)$ against
+the price dimension of the state space. The
+realised-trajectory Spearman rank-correlates the observed
+price at step $t$ against the agent's realised quantity at step
+$t+1$, restricted to the post-convergence window.
+
+\begin{criterion*}
+Reciprocity is declared present iff the median Spearman $\rho$
+across the three agents exceeds $0.30$ and is positive in at
+least three of five test seeds.
+\end{criterion*}
+
+\paragraph{Fine-grid results.}
+Tables~\ref{tab:spearman-policy} and~\ref{tab:spearman-real}
+report the two Spearman statistics at the headline
+discretisation ($n_{\text{seeds}} = 5$, full headline budget).
+The sign criterion is met on the realised metric ($11$ of $15$
+seed-agent observations are positive), but the magnitude
+criterion fails on both metrics: the median realised $\rho$ is
+$\mathbf{+0.07}$ and the policy-level median is $+0.02$. Under the
+pre-registered rule, the test closes as sign-consistent with
+implicit reciprocity but below the detection threshold for
+magnitude.
+
+% --- TABLE 6 ---
+
+% --- TABLE 7 ---
+
+\paragraph{Discriminating between weak reciprocity and
+path-dependence.}
+Two competing hypotheses are consistent with a Spearman median
+near zero. Hypothesis~H$_W$ (\emph{weak reciprocity}) holds that
+agents do implement a soft price-conditioned rule, but its
+magnitude is suppressed by the $74\%$ under-visitation rate at
+the headline discretisation; lifting coverage by coarsening the
+grid should therefore pull the median toward the pre-registered
+threshold. Hypothesis~H$_P$ (\emph{path-dependent lock-in})
+holds that reciprocity is genuinely absent: the cooperative basin
+is a static fixed point: a joint-output tuple selected
+by early exploration and maintained thereafter through essentially
+price-unconditioned policies. Under H$_P$, increasing coverage
+should leave the median near zero or move it toward zero.
+
+To discriminate between the two, the headline triopoly is
+re-trained at a coarser discretisation
+$(\text{actions} = 10,\;\text{price bins} = 9,\;
+\text{own-}q\text{ bins} = 7)$, which raises the mean visits per
+cell by a factor of approximately $2.7$ at the same training
+budget. H$_W$ is accepted if the realised Spearman median rises
+above $+0.15$; otherwise H$_P$ is accepted.
+
+The cooperative basin reproduces at the coarser grid (greedy
+$\CI = 0.56$, $95\%$ CI strictly above zero), confirming the
+qualitative finding. The Spearman statistics, however, move in
+the direction opposite to~H$_W$: the realised median falls from
+$+0.073$ to $+0.017$, and the policy-level median turns
+\emph{negative} ($+0.016 \to -0.094$). Both movements are
+exactly what H$_P$ predicts.
+
+\begin{verdict*}
+Hypothesis~H$_W$ is rejected; hypothesis~H$_P$ is accepted. As
+Q-table coverage increases, price-conditioned reciprocity does
+not strengthen; it attenuates. \textbf{The cooperative basin is
+sustained by path-dependent fixed-point lock-in, not by any form
+of state-conditioned retaliation.}
+\end{verdict*}
+
+\paragraph{Mechanism identification.}
+This identification is the section's central novel contribution.
+Different seeds, exposed to different early $\varepsilon$-greedy
+exploration histories, settle on different static joint-output
+tuples whose payoffs happen to dominate the Nash baseline. Once
+locked into such a tuple, agents maintain it through policies
+that are largely unresponsive to the observed price. The
+empirical attractor is therefore a \emph{Pareto-improving
+stationary Markov-perfect equilibrium} whose existence requires
+no threat of deviation-triggered punishment, closer in spirit
+to the ''non-cooperative collusion via independent imitation'' of
+\citet{vegaredondo1997} than to the Friedman-Abreu cartel of
+Section~\ref{subsec:folk} or the Green-Porter trigger model of Section~\ref{subsec:greenporter}.
+
+The three negative verdicts of
+Sections~\ref{subsec:forced}-\ref{subsec:reciprocity} are
+mutually reinforcing: strategic share $12.9\%$, cycle-detection
+rate over-firing on $3/5$ seeds, Spearman median $+0.07$
+shrinking toward zero as coverage improves. No individual
+failure would be decisive; their convergence across independent
+operationalisations constitutes a robust identification of the
+mechanism. The policy implication, developed in
+Section~\ref{sec:policy}, is that detection screens designed
+around explicit retaliation signatures will systematically miss
+this class of algorithmic collusion.
+
+% ============================================================
+\subsection{Robustness battery}
+\label{subsec:robustness}
+% ============================================================
+
+\emph{In brief:} the headline finding survives all four perturbations, a monotone $\gamma$-sweep (Spearman $\rho = 1.00$), an
+$\alpha$-sweep that keeps $\CI > 0.30$ throughout, cooperation that
+withstands demand shocks ($\CI = 0.96$), and tighter capacity caps that
+\emph{raise} $\CI$ ($\rho = -1.00$), and each sweep is read for its
+economic meaning, not merely for survival.
+
+Four self-contained sweeps test the sensitivity of the headline
+finding to the discount factor, the learning rate, the presence
+of demand shocks, and the tightness of capacity constraints. For
+each sweep we report not only whether the headline result
+survives but what it means economically: the patience sweep
+recovers the Folk-Theorem comparative static (more patient
+producers collude more), demonstrating that, even though the
+sustaining mechanism differs from the theory, the
+direction of the patience effect does not; the learning-rate
+sweep confirms the finding is not an artefact of a single
+computational choice; the demand-shock test shows cooperation
+survives Green-Porter monitoring failures, the empirical
+counterpart of why real cartels endure volatility; and the
+capacity sweep reveals that tighter ceilings raise
+realised cooperation, identifying idle capacity as the relevant
+strategic margin.
+
+% ------------------------------------------------------------
+\subsubsection{Patience: \texorpdfstring{$\gamma$}{gamma}-sweep}
+\label{subsec:gamma}
+% ------------------------------------------------------------
+
+Folk-Theorem theory predicts that cooperation breaks down when
+agents become myopic: below the critical patience threshold
+$\delta^\ast = 0.529$ derived in Section~\ref{subsec:folk}, the deviation
+temptation dominates the continuation value. The MARL analogue
+sweeps $\gamma \in \{0.50,\,0.70,\,0.85,\,0.95,\,0.99\}$ on
+$n_{\text{seeds}} = 20$ per grid point at the stress-test
+budget. The Folk-Theorem comparative static is declared
+recovered iff the means are monotone non-decreasing in $\gamma$
+(Spearman $\rho > 0$) and the $95\%$ CIs at $\gamma = 0.50$
+and $\gamma = 0.95$ are disjoint.
+
+\begin{verdict*}
+Spearman $\rho(\gamma,\CI) = 1.00$; the CI at $\gamma = 0.50$
+is $[0.24,\,0.29]$, strictly below the CI at $\gamma = 0.95$
+of $[0.67,\,0.82]$. Reformulated in Wilson-proportion terms,
+$\Pr[\CI \geq 0.20]$ rises monotonically from $0.80$ at
+$\gamma = 0.50$ to $1.00$ at $\gamma = 0.85$, where it
+saturates. \textbf{H3 is met.} The empirical patience threshold
+lies between $\gamma = 0.70$ and $0.85$, broadly consistent
+with the analytical $\delta^\ast = 0.529$.
+\end{verdict*}
+
+% ------------------------------------------------------------
+\subsubsection{Learning rate: \texorpdfstring{$\alpha$}{alpha}-sweep}
+\label{subsec:alpha}
+% ------------------------------------------------------------
+
+Fixing $\alpha = 0.15$ at the literature default leaves a
+single-point sensitivity that this sweep closes by testing
+$\alpha \in \{0.05,\,0.10,\,0.15,\,0.25\}$ on
+$n_{\text{seeds}} = 10$ per cell at the stress-test budget.
+The headline finding is declared robust iff the $95\%$ CI on
+the mean greedy $\CI$ remains strictly above $0.30$ at every
+grid point.
+
+Every cell satisfies this criterion with considerable margin:
+the lowest lower bound is $0.60$. The cross-$\alpha$ pattern
+is non-monotone, peaking near the literature default
+$\alpha = 0.15$, consistent with a classical bias-variance
+trade-off. Very small $\alpha$ updates the Q-table too
+conservatively; very large $\alpha$ overweights the most recent
+reward signal and erodes the cooperative signal accumulated
+during early exploration. Neither extreme falsifies the headline
+claim.
+
+% ------------------------------------------------------------
+\subsubsection{Demand shocks during training}
+\label{subsec:shocks}
+% ------------------------------------------------------------
+
+Two negative demand shocks of $\Delta a = -20\,\$\text{/bbl}$,
+each spanning approximately $10\%$ of the training horizon, are
+introduced on $n_{\text{seeds}} = 20$. The Green-Porter
+regime-switching mechanism is declared present iff the
+rolling-mean price drops by $\geq 2\sigma_P$ within the shock
+window and recovers to within $1\sigma_P$ of the pre-shock level
+within at most four shock-widths.
+
+Aggregated across $20$ shock-window observations, the median
+in-window mean drop is $2.73\sigma_P$ and the median trough
+drop reaches $5.78\sigma_P$; the median recovery half-life is
+$11$ steps against a shock width of $3{,}750$ steps
+(Table~\ref{tab:shocks}). Both sub-criteria are met by a wide
+margin. Notably, the post-shock converged collusion index
+($0.96$, $95\%$ CI $[0.88,\,1.04]$) exceeds the no-shock
+headline ($0.73$), consistent with agents trained through
+monitoring failures learning a more conservative joint-output
+target. \textbf{H4 is met on its shock-response
+operationalisation.}
+
+% --- TABLE 8 ---
+
+% ------------------------------------------------------------
+\subsubsection{Stackelberg leadership: single-learner regime}
+\label{subsec:stack}
+% ------------------------------------------------------------
+
+Within each step the decision order is learners $\rightarrow$
+myopic followers, implementing a Stackelberg commitment for any
+single learner. The leader has recovered Stackelberg leadership
+iff its $95\%$ CI on mean output brackets $q_L^\ast$ and
+its CI on mean price brackets the Stackelberg clearing price
+$P^\ast$; partial recovery is declared when only the price
+criterion holds.
+
+US and Russia satisfy both criteria (full recovery). OPEC
+satisfies neither: the learner settles at
+$74.00\,\text{mbd}$ versus $q_L^\ast = 80.00$ and the
+corresponding price of $48.15\,\$\text{/bbl}$ overshoots
+$P^\ast = 46.67$. This is not a failure of experimental design.
+A discounted leader anticipates the per-period payoff
+loss of depressing the price below Nash and consequently commits
+to less than the static first-best quantity. The Q-learner with
+$\gamma = 0.95$ thereby implements the discounted
+Stackelberg solution, not its atemporal counterpart.
+\textbf{H5 is met for two leaders out of three.}
+
+% ------------------------------------------------------------
+\subsubsection{Capacity constraints: tightness sweep}
+\label{subsec:cap}
+% ------------------------------------------------------------
+
+Activating the Section~\ref{subsec:capacity} caps at their baseline values
+($\text{cap}_{\text{US}} = 30$, $\text{cap}_{\text{OPEC}} = 40$,
+$\text{cap}_{\text{RUS}} = 35\,\text{mbd}$) and comparing the
+converged $\CI$, computed against the unconstrained benchmarks
+to preserve cross-row comparability, yields $95\%$ CIs that
+overlap almost entirely. Two channels of opposite sign are
+theoretically plausible: binding caps undermine the credibility
+of grim-trigger punishment, lowering $\CI$; and they
+mechanically compress the feasible output range toward a shared
+cooperative quota, raising $\CI$. The null on/off result is
+consistent with approximate cancellation at the calibrated cap
+pattern.
+
+A multiplicative tightness sweep
+$\lambda \in \{0.50,\,0.75,\,1.00,\,1.25,\,1.50\}$ around
+the baseline, with Nash and cartel benchmarks re-solved under
+each configuration before computing $\CI$, resolves the
+ambiguity decisively: Spearman $\rho(\lambda,
+\CI^{\text{tail}}) = -1.00$, with disjoint extremes
+($[3.56,\,4.34]$ at $\lambda = 0.50$ versus $[0.67,\,0.95]$
+at $\lambda = 1.50$). The tighter the caps, the higher the
+realised cooperation. At $\lambda = 0.50$ the constrained Nash
+already exceeds the unconstrained cartel price, and the MARL
+agents converge above that elevated benchmark, indicating that
+the behavioural cooperation channel adds further restraint on
+top of the purely mechanical constraint.
+
+% ============================================================
+\subsection{Causal identification: one, two, and three learners}
+\label{subsec:learners}
+% ============================================================
+
+\emph{In brief:} at identical budgets ($n_{\text{seeds}} = 20$) the
+single-learner and duopoly regimes are predatory ($\CI < 0$)
+while the triopoly is cooperative ($\CI \approx 0.63$), a non-monotone
+pattern in the number of learners that identifies all-player learning
+as the cause of the cooperative basin (\textbf{H2 met}).
+
+The experiments above establish that cooperation is observed and
+robust. They do not establish that it is caused by
+all-player learning rather than by some feature of the
+environment. Three regimes at identical training budgets and
+seed counts ($n_{\text{seeds}} = 20$ each) isolate the causal
+claim: single learner (OPEC only), duopoly (OPEC and US), and
+triopoly (all three). Learning by all players is declared the
+causal driver iff $\CI_{\text{single}} \leq 0.10$,
+$\CI_{\text{triopoly}} \geq 0.50$, and the two $95\%$ CIs do
+not overlap.
+
+\begin{verdict*}
+The CIs of the single-learner regime ($[-0.24,\,-0.13]$) and the triopoly\\ ($[+0.56,\,+0.70]$) are disjoint by more than
+$0.70$ units, over four pooled standard errors. All three
+pre-registered conditions are satisfied, though the
+single-learner criterion holds in the opposite direction
+to what was anticipated: the lone Q-learner does not converge
+to Nash but below it. \textbf{H2 is met; the reframing
+below is required by the pre-registered reporting protocol.}
+\end{verdict*}
+
+\paragraph{Substantive reframing.}
+A lone Q-learning OPEC facing two rational myopic Cournot
+followers converges to approximately $50.70\,\text{mbd}$, $27\%$
+above the Nash level, and thereby drives the market price to
+$56.29\,\$\text{/bbl}$, below static Nash of $60.00$. The
+mechanism is structural: the within-step decision order (learner
+$\rightarrow$ followers) grants OPEC a de facto Stackelberg
+commitment. Because $\varepsilon$-greedy exploration biases early
+training toward quantities that yield non-decreasing per-period
+profit signals, the attractor is a limit-pricing strategy
+that raises OPEC's individual profit at the cost of
+industry-wide price suppression. This attractor is not a mild
+form of the triopoly cooperative basin: it is a qualitatively
+distinct equilibrium that disappears the moment a second player
+begins learning, and is replaced by emergent cooperation when
+the third player joins. The resulting pattern is
+non-monotone in the number of learners: predatory for
+$n_{\text{learners}} \in \{1,\,2\}$, cooperative for
+$n_{\text{learners}} = 3$; a departure from the standard
+intuition that additional strategic players make collusion
+harder. The anchor effect of even one myopic best-responder is
+more corrosive of cooperation than the non-stationarity
+introduced by an additional learner.
+
+% ============================================================
+\subsection{Learned-policy heatmaps}
+\label{subsec:heatmaps}
+% ============================================================
+
+The greedy policy $\pi(s) = \arg\max_a Q(s,a)$ extracted from
+the headline triopoly run on a representative seed is displayed
+in Figure~\ref{fig:heatmaps}. Each panel maps one learning
+agent's greedy quantity, encoded by colour, against the
+discretised observed price (rows) and the agent's own previous
+output (columns). Unvisited states are left blank.
+
+Visual inspection confirms the Spearman finding of
+Section~\ref{subsec:reciprocity}: there is no systematic
+price-quantity co-monotone pattern. The converged policies are
+essentially unresponsive to the price bin within the range of
+states actually visited. This is not a deficiency of the
+training procedure; it is the direct visible imprint of
+path-dependent fixed-point lock-in.
+
+% --- FIGURE 2 ---
+
+% ============================================================
+\subsection{Verdict matrix}
+\label{subsec:matrix}
+% ============================================================
+
+Table~\ref{tab:matrix} applies each pre-registered decision rule
+verbatim to the Option~B evidence. H1, H2, and H3 are met;
+H4 (algorithmic retaliation) fails under three independent
+operationalisations, robust to a ${\sim}2.7\times$ change in
+Q-table coverage; H5 is partially met (two of three leaders).
+The secondary sweeps confirm the headline cooperative finding
+uniformly across the $\alpha$ range and deliver the monotone
+cap-tightness effect documented in
+Section~\ref{subsec:cap}.
+
+The section's central empirical result is therefore
+double-edged. Learning by all players reliably generates a
+cooperative attractor close to the joint-profit cartel. The
+mechanism sustaining that attractor, however, is not the
+Folk-Theorem retaliation equilibrium that the analytical
+literature has primarily studied. It is a path-dependent
+Markov-perfect lock-in: a Pareto-improving fixed point selected
+by the contingent history of early exploration and maintained
+thereafter through price-unconditioned policies. The distinction
+between these two equilibrium concepts is not merely taxonomic:
+it determines which detection methods can identify algorithmic
+collusion in practice. Figure~\ref{fig:ci-forest} maps where every
+Section~4 experiment lands on the collusion-index scale, making the
+regime contrasts and the robustness of the cooperative attractor
+visible at a glance.
+
+% --- TABLE 9 ---
+
+% ============================================================
+\subsection{Limitations and future directions}
+\label{subsec:limitations}
+% ============================================================
+
+This section's eight principal limitations are listed below for
+traceability. Four are closed by additional experiments or analysis,
+and one is partially closed. Read forward rather than defensively, each open
+item also marks the most natural extension of this work, and the
+research agenda at the end of this subsection organises them into
+concrete directions for anyone wishing to build on our setting.
+
+\begin{enumerate}\itemsep2pt
+
+  \item \textbf{Non-stationary environment.} Independent
+        $Q$-learning in a multi-agent setting violates the
+        stationarity assumption underlying the Bellman target:
+        each agent's policy is part of every other agent's
+        transition kernel \citep{claus1998, hernandez2017,
+        yang2020}. Convergence is empirical rather than
+        theoretical. Methods designed for multi-agent
+        non-stationarity \citep{foerster2017, lowe2017,
+        lanctot2017} are deliberately excluded to maintain
+        fidelity to the algorithmic-collusion literature, in
+        which independent $Q$-learning is the canonical
+        baseline \citep{calvano2020}.
+
+  \item \textbf{Partial Q-table coverage.} At the headline
+        discretisation, $74\%$ of $(s,a)$ cells are visited
+        fewer than five times. Uninitialised $Q$-values default
+        to zero, and the deterministic $\arg\max$ tie-breaks to
+        the lowest action index, mechanically biasing the greedy
+        rollout on undervisited cells toward low outputs. The
+        Wilson-proportion reformulation of
+        Section~\ref{subsec:basins} neutralises this bias on the
+        cooperative/non-cooperative dimension; it does not
+        neutralise it on the intensity of cooperation within the
+        cooperative half-space.
+
+  \item \textbf{[Closed] Hyper-parameter sensitivity.} The
+        $\alpha$-sweep of Section~\ref{subsec:alpha} confirms the
+        headline finding across the full literature-recommended
+        range, with the peak near the default $\alpha = 0.15$.
+
+  \item \textbf{Tail-versus-greedy gap.} Both estimators are
+        reported in every table. A tail-vs.-greedy difference
+        exceeding ${\sim}5\,\$\text{/bbl}$ signals that residual
+        exploration is still materially influencing the effective
+        policy at the end of training.
+
+  \item \textbf{[Closed] Discretisation bias.} The random-policy
+        baseline ($\CI = 0.04$, $95\%$ CI $[-0.04,\,0.12]$)
+        confirms the output grid is not systematically biased
+        toward cartel-side outcomes.
+
+  \item \textbf{[Partially closed] Reduced budget on stress
+        tests.} Robustness sweeps use half the headline training
+        budget. Within-sweep comparisons are internally valid;
+        the cycle and reciprocity checks of
+        Sections~\ref{subsec:cycles} and
+        \ref{subsec:reciprocity} are conducted at the full
+        headline budget.
+
+  \item \textbf{[Closed] Multiple comparisons.} Five primary hypotheses
+        are pre-registered; secondary hypotheses Q5--Q8 of
+        Table~\ref{tab:matrix} would shift the formal Spearman
+        threshold from $0.30$ to approximately $0.34$ under a
+        Bonferroni correction at family size~$8$. No borderline
+        result falls in the $[0.30,\,0.34]$ band.
+
+  \item \textbf{[Closed] Path-dependence versus weak
+        reciprocity.} The coarser-grid audit of
+        Section~\ref{subsec:reciprocity} formally rejects
+        H$_W$ and accepts H$_P$ under the pre-registered
+        intermediate-threshold criterion. A much coarser grid
+        or a non-tabular function approximator (deep Q-network)
+        are flagged as exploratory directions for follow-up
+        work.
+
+\end{enumerate}
+
+\paragraph{A research agenda.}
+We single out five directions, ordered by decreasing economic
+payoff rather than by technical convenience.
+
+\begin{enumerate}\itemsep3pt
+
+  \item \textbf{Scaling the strategic environment.}
+        Replicating the headline experiment for $N>3$ producers
+        would test whether the cooperative-basin frequency
+        decays as the number of players grows, the
+        empirical counterpart of the Folk-Theorem prediction that
+        the deviation temptation rises with $N$. Endogenous entry
+        and exit, calibrated to live episodes such as the UAE's
+        2026 withdrawal from OPEC+, and endogenous coalition
+        formation (linking back to the Shapley analysis of
+        Section~\ref{sec:dynamics}) would turn the fixed three-bloc partition into
+        an object of choice rather than an assumption.
+
+  \item \textbf{Richer learning agents.}
+        The single most consequential robustness question is
+        whether the path-dependent lock-in survives the move from
+        a tabular $Q$-table to a continuous state space under
+        function approximation (a deep $Q$-network). If the
+        lock-in is an artefact of grid discretisation it should
+        weaken; if it is a genuine property of reinforcement
+        learning in this game it should persist. Heterogeneous
+        algorithm pairings and longer price memory ($k$ lagged
+        prices rather than one) would further identify the
+        information threshold at which explicit Folk-Theorem
+        retaliation re-emerges.
+
+  \item \textbf{Sharper identification.}
+        Raising the seed count from $50$ to several hundred would
+        tighten the Wilson interval on the collusion frequency;
+        running every stress test at the full headline budget
+        would close limitation~6; and formal convergence
+        diagnostics (stationarity of $Q$-values, stability of the
+        greedy policy over the final episodes) would replace the
+        current empirical convergence claim with a defensible
+        criterion.
+
+  \item \textbf{Empirical grounding of the environment.}
+        Estimating the demand process and shock distribution on
+        historical OPEC+ data, rather than imposing them, would
+        recast calibrated parameters as estimated ones and let the
+        simulated price paths be validated against observed
+        regimes (1985, 2014, 2020, and the 2026 Hormuz episode).
+
+  \item \textbf{From detection failure to detection design.}
+        Because we show that reaction-function screens are blind
+        to a path-dependent lock-in, the natural sequel is to
+        design and power-test a detector built on path-dependence
+        itself, for example the correlation between initial
+        exploration and the converged price, and to assess whether
+        competition authorities could deploy it in practice.
+
+\end{enumerate}
+
+% ============================================================
+\section{Synthesis and Policy Implications}
+\label{sec:synthesis}
+% ============================================================
+
+\subsection{Cross-model synthesis}
+\label{subsec:synth}
+
+\emph{In brief:} consolidating the analytical and experimental layers
+into a single ranking of market structures leaves one discontinuity to
+reconcile, the punishment mechanism that is universal across the
+theoretical models is absent from the learned attractor.
+
+The analytical pipeline of Sections~\ref{sec:foundations}
+and~\ref{sec:dynamics} and the experimental evidence of
+Section~\ref{sec:marl} converge toward a coherent
+account of the global crude-oil oligopoly.
+Table~\ref{tab:synth-rank} ranks the market structures from the
+most competitive to the most collusive, with numerical anchors to
+the sections that derive each value.
+
+% --- TABLE 10 ---
+
+\begin{enumerate}\itemsep2pt
+
+  \item \emph{Static Nash is the universal competitive
+        benchmark.} Myopic best-response dynamics, replicator
+        dynamics, and uncoordinated $Q$-learning by a single
+        agent against rational rivals all converge to it
+        (Section~\ref{subsec:repeated}; Section~\ref{subsec:learners}).
+
+  \item \emph{OPEC's market power is both structural and
+        strategic.} The lowest marginal cost combined with the
+        largest first-mover premium yields the highest Lerner
+        index in every market structure, a result invariant to
+        the choice of competition mode and the activation of
+        capacity constraints (Section~\ref{subsec:marketpower}).
+
+  \item \emph{Cooperation Pareto-dominates Nash for every
+        producer.} The cartel allocation raises every player's
+        per-period profit; the correlated equilibrium of
+        Section~\ref{subsec:ce} provides a less extreme alternative that is
+        Pareto-improving relative to Nash under the max-min
+        objective.
+
+  \item \emph{Cooperation is enforceable but fragile.} The
+        Folk-Theorem threshold $\delta^\ast = 0.529$ sits
+        comfortably below the calibrated $\delta = 0.95$, but
+        rises monotonically with the number of strategic players
+        and the magnitude of demand uncertainty (Sections~3.2
+        and~3.5).
+
+  \item \emph{Capacity reshapes but does not eliminate market
+        power.} Binding caps modify $\delta^\ast$ in opposite
+        directions depending on whether they constrain the
+        cooperator or the punisher (Section~\ref{subsec:capacity}); in the MARL
+        setting the cap-tightness sweep delivers a monotone,
+        $\rho = -1.00$ pattern
+        (Section~\ref{subsec:cap}).
+
+  \item \emph{The social cost of collusion is large.} The
+        competition-to-cartel welfare gap is $2{,}362.50$
+        units; Nash-versus-competition already accounts for
+        $1{,}550.00$ (Section~\ref{subsec:welfare}). A Pigouvian carbon tax
+        shrinks, rather than amplifies, the collusion
+        premium: the ``green-cartel'' channel.
+
+  \item \emph{Punishment is the theoretical universal mechanism
+        but not the empirical one.} Folk-Theorem retaliation,
+        Green-Porter trigger phases, and the evolutionary
+        Punish strategy all rely on explicit retaliation in the
+        analytical models. Three independent empirical tests,
+        robust to a ${\sim}2.7\times$ change in Q-table
+        coverage, reject all three operationalisations of this
+        mechanism in the MARL attractor
+        (Section~\ref{subsec:matrix}).
+
+  \item \emph{Demand uncertainty raises $\delta^\ast$ but does
+        not break cooperation.} Under AR(1) shocks the binding
+        threshold rises from $0.53$ to $0.60$; under
+        jump-diffusion shocks the cooperative fraction falls by
+        nine percentage points but the regime survives
+        (Section~\ref{subsec:greenporter}).
+
+  \item \emph{Learning discovers near-cartel pricing.} In the
+        triopoly the headline collusion index is $0.73$ on the
+        greedy estimator ($95\%$ CI $[0.62,\,0.84]$, $n = 50$),
+        sustained by a converged price of
+        $72.63\,\$\text{/bbl}$. The cooperative basin is
+        reached on $94\%$ of seeds ($95\%$ CI
+        $[84\%,\,98\%]$). The finding is robust to the learning
+        rate across $\alpha \in [0.05,\,0.25]$ and to a
+        ${\sim}2.7\times$ change in Q-table coverage.
+
+  \item \emph{The empirical attractor is a path-dependent
+        Markov-perfect lock-in.} Its existence requires no
+        threat of deviation-triggered punishment and is closer
+        in spirit to the non-cooperative collusion via
+        independent imitation of \citet{vegaredondo1997} than
+        to either \citet{abreu1986} or
+        \citet{greenporter1984}. This identification defines
+        the section's primary scientific contribution and
+        carries direct consequences for how algorithmic
+        collusion should be detected in practice.
+
+\end{enumerate}
+
+The synthesis is consistent across the analytical and empirical
+layers: cooperation is sustainable, OPEC's deviation temptation
+is the binding constraint, and the algorithmic attractor is
+materially distinct from its theoretical specification.
+
+% ============================================================
+\subsection{Policy implications}
+\label{sec:policy}
+% ============================================================
+
+\emph{In brief:} the screens regulators currently rely on, built on
+reaction-function reciprocity, are structurally blind to the
+path-dependent algorithmic collusion documented in
+Section~\ref{subsec:reciprocity}, so detection must shift toward
+output-distribution and counterfactual-deviation tests.
+
+The recommendations below follow from the verdict matrix of
+Section~\ref{subsec:matrix}. H1-H3, Q7, and Q8 are all met.
+H4 (explicit algorithmic retaliation) is not met under any of
+its three operationalisations, with the failure robust to a
+${\sim}2.7\times$ change in Q-table coverage. Any recommendation
+previously framed around retaliation-mechanism detection is
+therefore re-cast around the path-dependent fixed-point
+identification of Section~\ref{subsec:reciprocity}.
+
+\subsection*{For OPEC member states}
+
+\begin{itemize}\itemsep2pt
+
+  \item Quantity leadership (Section~\ref{subsec:marketpower}) is strategically
+        optimal under cost asymmetry: the first-mover premium
+        concentrates in the lowest-cost producer.
+
+  \item The Folk-Theorem result ($\delta^\ast = 0.529$) implies
+        cartel discipline is enforceable whenever members plan
+        more than approximately two quarters ahead.
+
+  \item OPEC's bargaining power dilutes rapidly with market
+        fragmentation; preventing entry is strategically as
+        important as sustaining quotas.
+
+  \item Official quotas can be reinterpreted as a max-welfare
+        correlated equilibrium (Section~\ref{subsec:ce}), providing a
+        game-theoretic foundation for the OPEC Secretariat's
+        coordinating role that does not require legal
+        enforcement.
+
+  \item Spare capacity retains strategic value even when unused
+        (Section~\ref{subsec:capacity}); the cap-tightness sweep confirms that
+        productive capacity also deepens the cooperative basin
+        in the MARL setting.
+
+\end{itemize}
+
+\subsection*{For the Russian Federation within OPEC+}
+
+\begin{itemize}\itemsep2pt
+
+  \item Russia's Shapley value (Section~\ref{subsec:shapley}) confirms its
+        positive marginal contribution to the grand coalition.
+
+  \item The MARL result of Section~\ref{subsec:learners}
+        sharpens this considerably. When Russia is a passive
+        myopic best-responder, the collusion index is $-0.21$
+        ($95\%$ CI $[-0.24,\,-0.18]$) and the equilibrium is
+        predatory. When Russia also learns, the collusion index
+        jumps to $+0.73$ ($95\%$ CI $[0.62,\,0.84]$) and the
+        converged price reaches $72.63\,\$\text{/bbl}$.
+        Russia's adaptive behaviour is not merely valuable to
+        the coalition: it is a prerequisite for tacit
+        cooperation to emerge at all.
+
+\end{itemize}
+
+\subsection*{For US shale producers}
+
+\begin{itemize}\itemsep2pt
+
+  \item US shale ($c = 45\,\$\text{/bbl}$) is the most exposed
+        to price wars and demand collapses in every market
+        structure studied.
+
+  \item Both Cournot and Bertrand specifications confirm US
+        shale as the structurally squeezed player.
+
+  \item Fragmenting OPEC is not unambiguously beneficial:
+        it erodes the cooperation that also supports price
+        levels from which US producers benefit.
+
+\end{itemize}
+
+\subsection*{For competition authorities and regulators}
+
+\begin{itemize}\itemsep2pt
+
+  \item The Herfindahl-Hirschman index exceeds $2{,}500$ in
+        every market structure studied, placing the crude-oil
+        market in the ``highly concentrated'' category of the
+        U.S.\ Horizontal Merger Guidelines. The
+        competition-to-cartel welfare gap is $2{,}362.50$ units
+        (Section~\ref{subsec:welfare}), providing an order-of-magnitude estimate
+        of the social value of antitrust enforcement in this
+        industry.
+
+  \item \emph{Algorithmic collusion via reinforcement learning
+        is a credible threat.} Three independent $Q$-learners
+        observing only the market price reach a cooperative
+        basin on $94\%$ of seeds (greedy $\CI = 0.73$, $95\%$
+        CI $[0.62,\,0.84]$, $n = 50$), robust to the learning
+        rate across the literature range and to a
+        ${\sim}2.7\times$ change in Q-table coverage.
+
+  \item \emph{This cooperation requires neither communication
+        nor any of the three pre-registered Folk-Theorem
+        mechanisms.} Strategic share of the forced-deviation
+        response is $12.9\%$; the cycle detector over-fires on
+        $3/5$ seeds; and the median realised Spearman
+        reciprocity is $+0.07$ at the fine grid, shrinking
+        toward zero as coverage improves. The mechanism is
+        path-dependent fixed-point lock-in.
+
+  \item \emph{Consequence for detection.} Screens designed
+        around explicit time-series patterns (reaction-function
+        tests, punishment-cycle detectors, retaliation-window
+        analyses) will systematically fail against this class
+        of attractor. Robust algorithmic-collusion screening
+        must combine output-distribution tests (does the
+        realised joint output sit in the upper tail of the
+        distribution generated by independent simulation of the
+        same primitives?) with counterfactual deviation
+        experiments analogous to
+        Section~\ref{subsec:forced}. This recommendation
+        extends beyond oil to any oligopoly operating adaptive
+        pricing algorithms.
+
+\end{itemize}
+
+\subsection*{For climate policy}
+
+\begin{itemize}\itemsep2pt
+
+  \item The ``green-cartel'' effect of Section~\ref{subsec:welfare} is a
+        co-benefit of collusion, not a justification for it:
+        the welfare cost is borne by consumers.
+
+  \item A Pigouvian carbon tax is strictly more efficient: it
+        reduces the collusion premium and funds redistribution
+        toward those who bear the welfare loss.
+
+\end{itemize}
+
+\subsection*{For algorithm designers and platform operators}
+
+\begin{itemize}\itemsep2pt
+
+  \item Three independent $Q$-learners observing only the
+        market price converge to near-cartel pricing in a
+        calibrated triopoly. The finding is directly relevant
+        to algorithmic pricing in any oligopoly: airlines,
+        e-commerce, financial markets, ride-sharing.
+
+  \item Because the mechanism is a fixed-point lock-in selected
+        by early exploration, the relevant design lever is not
+        the architecture of the learning algorithm but the
+        information environment in which it operates.
+        Regulatory focus should rest on the price signals,
+        posted offers, and market-depth data available to
+        algorithms, rather than on the algorithms themselves.
+
+\end{itemize}
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+\paragraph{The journey and its central tension.}
+The analytical pipeline of Sections~2 and~3 established that the
+global crude-oil market exhibits the structural and institutional
+conditions under which cooperation is sustainable as a
+self-enforcing equilibrium: the Folk Theorem guarantees that, for
+patient enough producers, a collusive path can be
+supported. But existence is not selection. The theory is silent
+on which of the continuum of sustainable equilibria
+strategic but non-omniscient agents will actually reach. The
+empirical pipeline of Section~\ref{sec:marl} answered precisely that question:
+three independent $Q$-learners, observing only the market price
+and receiving no programmed coordination, reach a cooperative
+basin on $94\%$ of seeds, yet three independent falsification
+tests reject explicit Folk-Theorem retaliation. The cooperative
+outcome is a path-dependent Markov-perfect lock-in, not a
+punishment equilibrium.
+
+\paragraph{Contributions.}
+The thesis makes three contributions. \emph{Methodologically}, it
+extends the algorithmic-collusion experiments of
+\citet{calvano2020} from Bertrand pricing to Cournot quantity
+competition with empirically calibrated asymmetric costs, embedded
+in the \citet{greenporter1984} imperfect-monitoring framework.
+\emph{Empirically}, it shows that tacit collusion emerges
+spontaneously among autonomous learners but through a mechanism
+distinct from the one the theory predicts. \emph{Economically},
+this distinction matters: detection screens built on
+reaction-function reciprocity, the workhorse of antitrust
+analysis, are structurally blind to a lock-in that exhibits no
+retaliation, so the contribution is not that ``algorithms
+collude'' (a computer-science observation) but that the
+economic apparatus used to police collusion misses this
+class entirely.
+
+\paragraph{Scope of validity.}
+These results hold for a stylised three-bloc triopoly with
+tabular learners observing a single lagged price. Their
+generalisation to larger player sets, continuous state spaces, and
+empirically estimated demand dynamics remains open, which is the
+subject of the research agenda set out in
+Section~\ref{subsec:limitations}.
+
+\paragraph{Outlook.}
+Two extensions stand out. Testing whether the path-dependent
+lock-in survives a continuous state space under function
+approximation would establish whether the central finding is a
+property of reinforcement learning or an artefact of
+discretisation. And turning our detection-failure result into a
+detection design, a screen built on path-dependence rather
+than reciprocity, would convert a negative diagnostic into a
+constructive tool for competition authorities facing an era of
+pervasive adaptive pricing. The reorientation of the regulatory
+toolkit that our findings call for is, ultimately, the most
+consequential question this work leaves to its successors.
+
+% ============================================================
+%  FIGURES (placées après les tables qui les précèdent dans
+%  le texte pour respecter l'ordre logique de lecture)
+% ============================================================
+
+% --- FIGURE 1 ---
+

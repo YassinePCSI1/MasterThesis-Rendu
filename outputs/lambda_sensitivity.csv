@@ -1,0 +1,9 @@
+lambda,eigenvalue_mu,abs_eigenvalue,regime,half_life_periods,convergence_period_2pct,final_price,price_volatility
+0.0,1.0,1.0,monotone,inf,50,140.0,0.0
+0.1,0.8,0.8,monotone,3.11,18,60.0,13.66
+0.2,0.6,0.6,monotone,1.36,8,60.0,8.14
+0.3,0.4,0.4,monotone,0.76,4,60.0,4.82
+0.5,0.0,0.0,critical,0.0,0,60.0,0.0
+0.7,-0.4,0.4,oscillatory,0.76,4,60.0,4.92
+0.9,-0.8,0.8,oscillatory,3.11,18,60.0,14.2
+1.0,-1.0,1.0,oscillatory,inf,50,105.03,49.38

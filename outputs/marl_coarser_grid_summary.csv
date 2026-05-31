@@ -1,0 +1,9 @@
+player,metric,median_rho,mean_rho,n_seeds_with_rho_positive,n_seeds_with_rho_greater_0p30,n_seeds_total
+US,spearman_rho_policy,-0.1141,-0.1191,3,0,10
+OPEC,spearman_rho_policy,-0.0541,-0.0633,3,1,10
+RUS,spearman_rho_policy,-0.0869,-0.0818,3,0,10
+ALL,spearman_rho_policy,-0.0936,-0.0881,9,1,30
+US,spearman_rho_realised_lag1,0.0009,-0.0828,5,0,10
+OPEC,spearman_rho_realised_lag1,0.092,0.0582,6,1,10
+RUS,spearman_rho_realised_lag1,0.0597,0.0456,6,1,10
+ALL,spearman_rho_realised_lag1,0.0174,0.007,17,2,30

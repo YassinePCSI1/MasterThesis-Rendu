@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# macOS
+.DS_Store
+
+# LaTeX build artifacts (Rendu_final)
+Rendu_final/build/*
+!Rendu_final/build/main.pdf
+
+# Legacy outputs/ build artifacts
+outputs/report.aux
+outputs/report.log
+outputs/report.out
+outputs/report.toc
+outputs/thesis_parts_III_IV.aux
+outputs/thesis_parts_III_IV.log
+outputs/thesis_parts_III_IV.out
+outputs/run_*.log

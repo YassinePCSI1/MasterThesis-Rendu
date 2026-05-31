@@ -1,0 +1,2 @@
+experiment,shock_size_delta_a,shock_window,shocks,n_seeds,mean_collusion_index,std_collusion_index,ci_95_low,ci_95_high,mean_converged_price,std_converged_price,mean_q_US,std_q_US,mean_q_OPEC,std_q_OPEC,mean_q_RUS,std_q_RUS
+marl_demand_shock,-20.0,7500,25000-32500;50000-57500,20.0,0.9583,0.1756,0.8813,1.0352,79.1656,3.5115,15.5461,2.8585,25.0949,2.6407,20.1953,3.5441

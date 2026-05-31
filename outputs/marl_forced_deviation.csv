@@ -1,0 +1,2 @@
+experiment,deviator,deviation_q,deviation_start,deviation_duration,mean_pre_price,mean_during_price,mean_post_price,window,n_seeds,mean_collusion_index,std_collusion_index,ci_95_low,ci_95_high,mean_converged_price,std_converged_price,mean_q_US,std_q_US,mean_q_OPEC,std_q_OPEC,mean_q_RUS,std_q_RUS
+marl_forced_deviation,OPEC,40.0,18750.0,625.0,79.7845,64.1818,74.3644,625.0,20.0,0.6723,0.2672,0.5552,0.7894,73.4462,5.3445,15.6929,2.9012,30.6772,3.9121,20.1853,3.2427

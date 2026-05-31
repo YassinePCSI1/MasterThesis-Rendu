@@ -1,0 +1,396 @@
+\section{Strategic Dynamics: The Theoretical Anchor}
+\label{sec:dynamics}
+
+\subsection{From static to dynamic: repeated game dynamics}
+\label{subsec:repeated}
+
+A static (one-shot) game ends after a single round of choices. A
+repeated game embeds the same stage game in time, so the same producers
+choose outputs in every period and discount future profits at a common
+factor $\delta \in (0,1)$. The discount factor captures how much present
+weight players place on future payoffs: a high $\delta$ corresponds to
+patient producers, a low $\delta$ to impatient ones. The reason this
+matters is that repetition introduces a credible mechanism of reward and
+punishment, which transforms the set of sustainable outcomes relative to
+the static game \citep{friedman1971,fudenbergmaskin1986}. Before we
+evaluate the cooperative equilibrium, we first study the simplest
+possible dynamic adjustment rule: myopic best-response with inertia.
+``Myopic'' means each producer optimises against last period's actions
+only, without forward-looking calculation; ``inertia''
+$\lambda \in (0,1)$ means producers adjust gradually rather than jumping
+to the new best response, which is a realistic constraint for an
+industry in which drilling, leasing, and contracting take time.
+
+Formally, each producer updates its quantity according to
+\begin{equation}
+q_i(t+1) \;=\; (1 - \lambda)\, q_i(t) + \lambda\, \mathrm{BR}_i\bigl(q_{-i}(t)\bigr),
+\label{eq:3}
+\end{equation}
+where $\mathrm{BR}_i(\cdot)$ is the static Cournot best response of
+player~$i$ to the output vector $q_{-i}(t)$ of all other players.
+Starting from an out-of-equilibrium initial condition with $P(0) = 108$,
+the price converges monotonically to the static Nash level $P = 60$
+within approximately eight periods at $\lambda = 0.2$; the standard
+deviation of the simulated price path is 8.14 (see Figure~19). The
+dynamics are governed by the dominant eigenvalue $\mu = 1 - 2\lambda$ of
+the linearized system around equilibrium, which is why convergence is
+monotone for $\lambda \in (0, 0.5)$, critical at $\lambda^* = 0.5$, and
+oscillatory for $\lambda \in (0.5, 1)$ (see Figure~20). The economic
+content is that even purely myopic adjustment, with no forward-looking
+calculation, takes the market to the static Nash equilibrium, which then
+becomes the relevant benchmark against which cooperative deviations and
+punishments are measured.
+
+Conditional on a large negative shock, defined here as any quarter in
+which the simulated price falls more than \$21/bbl below the cartel
+price of \$80, the mean recovery path traces out an exponential
+approach back to the cooperative level, with a half-life of 5.2 quarters
+and asymptotic mean of \$78.7, statistically indistinguishable from the
+cartel target (see Figure~21). The 80 percent confidence band around
+this mean is wide in the first three periods (where idiosyncratic shock
+magnitudes still dominate) and narrows after period 10 once the
+punishment phase has cleared. The empirical analogue is the 2020 OPEC+
+collapse, where the front-month price recovered approximately 80 percent
+of its pre-shock level within five months ($\approx 1.5$ quarters in
+our discretisation), slightly faster than our simulated half-life,
+consistent with the unusually aggressive April 2020 production cut that
+we do not model explicitly. The figure therefore quantifies the speed
+at which a credible cooperative arrangement can absorb a large adverse
+shock, which is the dynamic counterpart of the static Folk-Theorem
+result that we develop in the next subsection.
+
+\subsection{Cartel, punishment, and the Folk Theorem}
+\label{subsec:folk}
+
+We now allow producers to consider cooperative quantities that improve
+on the Nash outcome. A cartel is a coalition of producers that
+coordinates output to maximise joint profit, just as a hypothetical
+multi-plant monopolist would. The cartel quota allocation we implement
+maximises joint profit subject to proportional output cuts; the price
+rises from \$60 to \$80 and every player's per-period payoff rises
+relative to Nash. The economic question is not whether this outcome is
+attractive (it is, ex ante) but whether it is self-enforcing once
+players are free to deviate.
+
+The classical tool for answering this question is the Folk Theorem
+\citep{friedman1971,fudenbergmaskin1986}. The Folk Theorem states that,
+in an infinitely repeated game with sufficiently patient players, any
+individually rational and feasible payoff vector can be supported as a
+subgame-perfect equilibrium of the repeated game. The mechanism is that
+the threat of future punishment deters present deviation, provided the
+discount factor is high enough. The simplest implementation is the
+grim-trigger strategy: every player cooperates as long as everyone else
+cooperated in every previous period; the first observed deviation
+triggers a permanent reversion to the static Nash equilibrium. The
+incentive-compatibility (IC) constraint requires that, in every period,
+the discounted value of continuing to cooperate exceeds the one-period
+gain from deviating plus the discounted value of the post-deviation
+punishment:
+\begin{equation}
+\frac{\pi_i^{\text{coop}}}{1 - \delta} \;\ge\; \pi_i^{\text{dev}} + \frac{\delta\, \pi_i^{\text{nash}}}{1 - \delta},
+\label{eq:4}
+\end{equation}
+which rearranges to
+\begin{equation}
+\delta \;\ge\; \delta_i^* \;=\; \frac{\pi_i^{\text{dev}} - \pi_i^{\text{coop}}}{\pi_i^{\text{dev}} - \pi_i^{\text{nash}}}.
+\label{eq:5}
+\end{equation}
+The quantity $\delta_i^*$ is the critical discount factor for player~$i$:
+the smallest level of patience that makes cooperation incentive
+compatible. Our simulations yield $\delta_{\text{US}}^* = 0.455$,
+$\delta_{\text{OPEC}}^* = 0.529$, and $\delta_{\text{RUS}}^* = 0.441$
+(see Figure~22). OPEC carries the binding constraint because its cost
+advantage gives it the highest deviation temptation; the cartel is
+sustainable as long as the common discount factor exceeds 0.529. At our
+calibrated $\delta = 0.95$, cooperation is comfortably supportable.
+
+We illustrate the mechanism with a simulated deviation by OPEC in period
+$t = 5$, followed by ten periods of Nash punishment and a return to
+cooperation. OPEC still earns 5,368.67 more under ``cooperate, deviate
+once, be punished, recover'' than under ``permanent Nash play'' (see
+Figure~23). The implication is that grim-trigger does more than make
+cooperation feasible; it makes cooperation strictly the dominant
+long-run strategy even when deviations occur. This result connects
+directly to the empirical compliance literature on OPEC.
+\citet{burbidge1997} show that chronic overproduction by members under
+fiscal stress is consistent with the temptation structure that
+equation~(\ref{eq:5}) formalizes. \citet{almutairi2025} in \appref{app:almutairi}
+provide counterfactual simulations indicating that oil price volatility
+would roughly double without OPEC+ discipline, and \citet{montant2025}
+finds that OPEC+ exerted stronger price influence in 2017 to 2022 than
+in earlier periods but that the post-2022 environment weakened
+compliance. The 2020 OPEC+ collapse and its rapid recovery within five
+weeks is a textbook example of an off-path punishment phase followed by
+re-coordination, and persistent overproduction by Iraq and Kazakhstan
+throughout 2024 to 2026 is consistent with players whose fiscal
+break-even raises their individual $\delta_i^*$ close to the operative
+discount factor. \citet{abreu1986} further demonstrates that brief,
+severe stick-and-carrot punishments dominate permanent reversion, a
+refinement we exploit only implicitly through the symmetry of the
+grim-trigger path.
+
+\subsection{Correlated equilibrium (CE)}
+\label{subsec:ce}
+
+Nash and Folk Theorem analysis treats every player as choosing
+independently. In many real institutions, however, there is a trusted
+mediator who recommends actions confidentially. A correlated equilibrium
+(CE) generalises Nash equilibrium to this setting \citep{aumann1974}: a
+mediator draws an action profile from a joint distribution on the action
+space and privately tells each player its prescribed action; the
+distribution is a correlated equilibrium if every player finds it
+incentive-compatible to follow the recommendation, conditional on the
+information conveyed. The set of correlated equilibria contains all Nash
+equilibria and is generally strictly larger; this is the technical
+reason a benevolent mediator can do strictly better than uncoordinated
+play. The OPEC Secretariat is a natural empirical analogue of the
+Aumann mediator, since it issues production targets that members can
+either follow or deviate from.
+
+We discretise the action space (ten quantity levels per player) and
+solve a linear program over the joint distribution on action profiles,
+under three objective functions: maximum total welfare, maximum joint
+profit, and maximum-min individual profit. The results sit between the
+static Nash and the full cartel: the max-welfare CE delivers
+$P = \$60.00$ and $W = 5{,}766.67$ (a gain of about 2 percent over
+Nash); the max-joint-profit CE produces $P = \$61.67$ and
+$W = 5{,}694.44$; the max-min CE delivers $P = \$60.00$ and
+$W = 5{,}600.00$, with the lowest-earning player guaranteed a floor
+(see Figures~24, 25 and~26). The CE never reaches the cartel price of
+\$80, which reflects the IC constraints that pure cartel quotas
+violate.
+
+Two cautions are warranted. The first concerns the distribution of the
+welfare gain across players. An allocation is Pareto-improving relative
+to a benchmark if no player is worse off and at least one is strictly
+better off; this is the standard fairness criterion for changes that
+require voluntary agreement. The max-welfare CE fails this test.
+Although total welfare rises by about 2 percent above Nash, the gain is
+achieved by reallocating production toward the lowest-cost producer:
+OPEC's per-period profit rises by 17 percent ($1{,}600 \to 1{,}867$),
+while US profit falls by 11 percent ($225 \to 200$) and Russia's by 20
+percent ($625 \to 500$). Under an unanimity rule, the relevant decision
+rule for a voluntary coalition with no legal enforcement, the
+max-welfare CE would therefore be rejected by both US and Russia. Only
+the max-min CE, which explicitly imposes a profit floor for the
+worst-off player, is Pareto-improving relative to Nash; its welfare
+gain is correspondingly smaller ($W = 5{,}600$ versus $5{,}766.67$ for
+max-welfare) because protecting the weakest player constrains how
+aggressively the mediator can push the equilibrium toward efficiency.
+The empirical UAE exit in 2026, Angola in 2024, and Qatar in 2019
+(analysed formally through the Shapley-core lens in the next section)
+all map onto violations of exactly this Pareto-Nash floor: when
+allocated quotas push individual profits below standalone values, the
+affected members rationally leave the coalition. The second caution is
+narrower and numerical: the discretisation is coarse (ten quantity
+levels per player), which produces small support sizes (one to two
+profiles in most cases) and unusually clean numerical answers that
+should be read as indicative rather than exact.
+
+\subsection{Coalition formation and Shapley values}
+\label{subsec:shapley}
+
+Cooperative game theory, in contrast to the non-cooperative theory used
+above, asks how the joint surplus generated by cooperation should be
+divided when binding agreements are possible. The central object is the
+characteristic function $v(S)$, defined for every subset $S$ of the
+player set $N$. The number $v(S)$ is the maximum payoff that coalition
+$S$ can guarantee itself, irrespective of what non-members do. We
+compute $v(S)$ by letting members of $S$ coordinate their outputs to
+maximise joint profit while non-members play their simultaneous Nash
+best-response. The grand coalition $N$ delivers $v(N)$, the largest
+cooperative surplus.
+
+Three concepts complete the framework. The Shapley value
+\citep{shapley1953} is the unique allocation that satisfies four axioms
+(efficiency, symmetry, null-player, and additivity). Each player's
+Shapley payoff $\phi_i$ is its average marginal contribution
+$v(S \cup \{i\}) - v(S)$ across all possible orderings of $N$. The core
+is the set of allocations such that no sub-coalition can credibly
+secede; an allocation is in the core when, for every coalition
+$S \subseteq N$, $\sum_{i \in S} x_i \ge v(S)$. Core stability is
+therefore the cooperative-game-theoretic analogue of the IC constraint
+in repeated games. The broader framework is developed in
+\citet{shenoy1979}.
+
+Our characteristic function yields $v(\emptyset) = 0$,
+$v(\{\text{US}\}) = 300$, $v(\{\text{OPEC}\}) = 2{,}133.33$,
+$v(\{\text{RUS}\}) = 833.33$,
+$v(\{\text{OPEC, US}\}) = 2{,}278.12$,
+$v(\{\text{RUS, US}\}) = 1{,}012.50$,
+$v(\{\text{OPEC, RUS}\}) = 2{,}628.12$, and $v(N) = 3{,}600.00$. The
+Shapley allocation is $\phi_{\text{US}} = 477.95$,
+$\phi_{\text{OPEC}} = 2{,}202.43$, and $\phi_{\text{RUS}} = 919.62$,
+summing to $v(N)$ (see Figure~27). We verify core stability: no
+sub-coalition can credibly threaten to break away because, for every
+coalition $S \subseteq N$, the sum of Shapley payoffs to the members of
+$S$ exceeds the coalition value $v(S)$.
+
+The framework provides a clean theoretical lens on coalition dynamics
+in OPEC+. The classical core-stability condition
+$\phi_i \ge v(\{i\})$ is equivalent to the statement that each member's
+Shapley allocation under prevailing quotas dominates its standalone
+alternative. The UAE's withdrawal from OPEC, notified on 28~April 2026 and effective
+1~May 2026 \citep{emirates2026}, maps directly onto a violation of this
+inequality: Abu Dhabi's capacity of 4.85 mbd was held roughly
+30 percent below potential by OPEC+ quotas \citep{woodmac2026}, implying
+that the quota-driven allocation undershot the standalone value of
+unconstrained capacity. Angola in 2024 and Qatar in 2019 follow the
+same logic. \citet{okulloreynes2016} estimate an OPEC cooperation
+parameter between Cournot-Nash and perfect cartel, and
+\citet{escrihuela2018} construct a coefficient of cooperation for
+asymmetric duopoly; both are consistent with the partial-but-stable
+allocation we recover here. \citet{ghoddusi2017} provides a useful
+caveat: capacity itself is an enforcement mechanism, because members
+without spare capacity cannot deviate, and compliance is therefore
+partly structural rather than purely strategic.
+
+\subsection{Stochastic demand and Green and Porter monitoring}
+\label{subsec:greenporter}
+
+So far, we have assumed that producers perfectly observe each other's
+output. In reality, the market price is observable instantly, but
+individual production volumes arrive with lag and are revised
+repeatedly (BP, OPEC, and IEA estimates routinely diverge by hundreds
+of thousands of barrels per day for the same month). This information
+asymmetry creates a monitoring problem: a low observed price could
+reflect either a genuine deviation by a rival or simply a negative
+demand shock that no producer caused. \citet{greenporter1984}
+formalized this in their celebrated paper on noncooperative collusion
+under imperfect price information. In their model, producers sustain
+cooperation through a trigger-price strategy: whenever the observed
+price falls below a pre-set threshold $\bar{p}$, all producers revert to
+Nash punishment for a fixed number of periods, regardless of whether the
+drop was caused by a defection. The equilibrium therefore features
+periodic price wars triggered by adverse demand realizations, not by
+actual cheating. \citet{porter1983} provided the first empirical
+validation of this mechanism using data from the Joint Executive
+Committee railroad cartel, and \citet{almoguera2011} in \appref{app:almoguera}
+estimated regime-switching probabilities between collusive and Cournot
+phases for OPEC over 1974 to 2004.
+
+We model demand uncertainty in two ways. The first is a standard AR(1)
+shock to the intercept $a$ with persistence $\rho = 0.6$ and standard
+deviation $\sigma = 8$ (in dollars per barrel), which captures the
+business-cycle component of demand fluctuations. The second is a
+\citet{merton1976} jump-diffusion specification that overlays a compound
+Poisson process on the AR(1) diffusion. Jump-diffusion was originally
+introduced in financial economics to capture sudden discontinuities in
+asset prices; we use it here because oil markets are also subject to
+abrupt discontinuities such as pipeline explosions, sanctions
+escalations, and armed conflicts. We simulate 300 Monte Carlo paths
+over 200 quarters and recover a mean terminal price of \$59.77 with a
+P10 to P90 spread of 6.27 around the static Nash benchmark. Scenario
+analysis varying $\Delta a$ from $-30$ to $+30$ confirms the linearity
+of the static comparative statics: at $\Delta a = -30$ (a severe demand
+contraction), OPEC profit falls from 1,600 to 1,056.25 (see Figure~28).
+
+Implementing the Green-Porter trigger with $\bar{p} = 68$ (the midpoint
+between the Nash and cartel prices), we recover the regime-switching
+pattern that \citet{greenporter1984} predict theoretically and that
+\citet{porter1983} and \citet{almoguera2011} document empirically (see
+Figures~29 and~30). Table~1 summarises the steady-state statistics
+under both demand specifications. Two qualitative readings emerge.
+First, under smooth AR(1) demand the cartel is in its cooperative
+regime 94 percent of the time and punishment episodes are rare; the
+modelled OPEC+ operates roughly as it does in calmer periods such as
+2017 to 2019. Second, once we add discontinuous jumps to capture event
+risk: pipeline disruptions, sanctions escalations, armed conflicts,
+the cooperation fraction falls by nine percentage points, the average
+cooperative spell shortens by a third (from 15 to 10 years), and the
+number of false punishment triggers more than doubles (291 to 685 over
+the same simulation horizon). The punishment-phase length, by contrast,
+is essentially invariant across specifications because it is set
+exogenously by the trigger rule rather than by the shock process. The
+economic content is that the type of uncertainty matters as much as
+its magnitude: a market that absorbs smooth volatility can still fail
+to absorb a single large jump, which is exactly the pattern observed
+in March 2020 (oil-price war coincident with COVID demand collapse)
+and in February 2026 (Hormuz closure). \citet{barskykilian2004} argue
+that oil price volatility is driven as much by demand-side shocks as
+by supply coordination failures, which is precisely the channel through
+which false punishment phases arise in our simulation.
+
+We then re-derive the Folk Theorem under stochastic demand. The
+deterministic critical discount factor is $\delta^* = 0.53$. Under
+uncertainty, with shocks expanding the deviation temptation in good
+states and contracting punishment severity in bad ones, it rises to
+$\delta^* = 0.60$. Both lie comfortably below our calibrated
+$\delta = 0.95$, so cooperation survives (see Figures~31 to~34). We
+interpret the 0.07 increment as the ``price of uncertainty'' in cartel
+maintenance: a quantitative measure of how much additional patience is
+required to keep cooperation robust to noise. \citet{app1990} and
+\citet{flm1994} prove the limiting efficiency result that motivates
+this exercise, and \citet{jin1999} shows that even private aggregate
+information suffices, which is the empirically relevant case for the
+oil market because country-level production data arrive late and
+revised, but the global spot price is observable in real time.
+
+\subsection{Evolutionary game theory}
+\label{subsec:evo}
+
+The final framework of this section treats the producer population as
+a biological-style ecosystem of strategy types whose shares evolve over
+time. Evolutionary game theory, introduced by \citet{maynardsmith1973}
+and developed by \citet[p.~??]{weibull1995}, \citet[p.~??]{hofbauersigmund1998}, and
+\citet[p.~??]{hofbauerweibull1996},
+differs from classical game theory in two ways. First, it does not
+require players to be rational; strategies are inherited or imitated,
+and successful strategies spread because their carriers earn higher
+payoffs. Second, it predicts long-run population composition rather
+than one-shot best responses. The central solution concept is the
+evolutionarily stable strategy (ESS): a strategy that, if adopted by
+the entire population, cannot be invaded by a small share of mutants
+playing any alternative. The dynamic that delivers ESS is the
+replicator equation, which states that the share of each strategy grows
+in proportion to the gap between its own payoff and the population
+average. We use both the two-strategy and three-strategy versions of
+the replicator dynamic below.
+
+The two-strategy game lets each player choose Cooperate (C) or Defect
+(D). The payoffs satisfy the Prisoner's Dilemma ordering
+$\phi^{\text{dev}} = 2{,}025$, $\phi^{\text{coop}} = 1{,}800$,
+$\phi^{\text{nash}} = 1{,}600$, and $\phi^{\text{sucker}} = 1{,}500$,
+where the sucker payoff is what a cooperator earns against a defector.
+Under replicator dynamics the population converges to the all-Defect
+corner; the all-Cooperate corner is unstable. Without an enforcement
+mechanism, evolutionary selection therefore reproduces the classical
+result that cooperation collapses.
+
+We then enrich the strategy set with a third type, Punish (P), which
+cooperates on path but retaliates against defectors. The phase diagram
+of the three-strategy replicator (see Figures~35, 36 and~37) is
+bistable: if the initial share of punishers is sufficiently large, the
+population converges to a stable C-P mixture in which cooperation is
+sustained; otherwise, defection dominates. The economic intuition is
+that a critical mass of credible enforcers is required for cooperation
+to survive selection, and the size of that critical mass depends on the
+punishment payoff structure.
+
+Sensitivity analysis on the severity of punishment yields a clear
+pattern. Moderate punishment multipliers (1.05 to 1.8 times the Nash
+payoff) sustain cooperation; excessive punishment (above approximately
+1.9 times Nash) destroys the punishers themselves, because retaliation
+becomes costlier than the gain from discipline; unconditional,
+non-targeted punishment never sustains cooperation, with defection
+dominating at every multiplier (see Figure~38). The mapping to OPEC+ is
+direct: a moderate, credible threat of flooding (analogous to Saudi
+Arabia's 2020 production surge and to the post-2014 episode that
+\citet{beharritz2017} analyse in \appref{app:behar-ritz}) supports cooperation,
+while indiscriminate or excessive flooding erodes the political capital
+required to sustain coordination. \citet{wood2016} provide an
+agent-based analogue of this result for the OPEC-versus-Seven-Sisters
+transition, and \citet{xinzhang2023} extend the replicator framework to
+a tripartite Russia, sanctioning country, and non-sanctioning country
+game, with strategies converging to stable states under sanctions.
+
+This section therefore closes the loop on the static-environment
+results of the previous one. Repeated interaction, stochastic
+monitoring, coalitional bargaining, and evolutionary selection all
+converge on the same qualitative finding: cooperation is fragile but
+supportable, the binding constraint is OPEC's deviation temptation,
+and the threshold conditions have direct empirical counterparts in
+observable OPEC+ behaviour. The remainder of the thesis builds on this
+anchor by introducing model-free learners (Section~\ref{sec:marl}), an empirical
+validation against the 1985, 2014, and 2020 price wars, and a synthesis
+of policy implications.

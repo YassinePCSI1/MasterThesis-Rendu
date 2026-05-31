@@ -1,0 +1,21 @@
+% Full thesis — compile from this directory with build_thesis.ps1
+\input{preamble}
+
+\begin{document}
+
+\input{frontmatter}
+\input{introduction}
+\input{part_I_foundations}
+\input{part_II_dynamics}
+
+% Sections 4--5 (MARL, synthesis & policy)
+\input{part_III_IV_body}
+
+% References come immediately after the main text (before figures/tables).
+\clearpage
+\bibliography{references}
+
+% Supporting materials after the reference list: figures, tables, appendices.
+\input{backmatter_tables}
+
+\end{document}

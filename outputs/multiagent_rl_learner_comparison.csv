@@ -1,0 +1,4 @@
+regime,n_learners,learning_players,n_seeds,mean_collusion_index,std_collusion_index,mean_converged_price,std_converged_price,mean_q_US,std_q_US,mean_q_OPEC,std_q_OPEC,mean_q_RUS,std_q_RUS
+single,1,OPEC,20,-0.1855,0.1243,56.291,2.4851,11.7143,2.5357,50.7037,7.5058,21.291,2.4851
+duopoly,2,OPEC+US,20,-0.1996,0.117,56.0085,2.3395,18.63,2.6667,44.3495,6.4455,21.012,2.3378
+triopoly,3,US+OPEC+RUS,20,0.6313,0.1566,72.6252,3.1311,16.612,1.7766,28.6166,3.6526,22.152,2.8362

@@ -1,0 +1,6 @@
+experiment,headline_value,headline_metric
+gamma_sweep,0.9337,mean_CI at γ_max
+demand_shock,0.9583,mean_CI under shocks
+forced_deviation,62.3765,mean price during forced deviation
+marl_stackelberg,50.9504,avg MARL leader q (mbd)
+capacities,0.8706,mean_CI under capacity constraints

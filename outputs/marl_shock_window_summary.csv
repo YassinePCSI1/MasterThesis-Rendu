@@ -1,0 +1,5 @@
+stat,mean_drop_dollar,trough_drop_dollar,relative_mean_drop_in_sigmaP,relative_trough_drop_in_sigmaP,recovery_half_life_steps,recovery_half_life_over_shock_width
+median,6.3149,18.1302,2.7325,5.7849,11.0,0.0029
+IQR,7.1167,9.6112,1.9512,3.0546,27.25,0.0072
+mean,7.3827,16.7164,2.763,6.3319,22.4,0.006
+std,5.5569,6.4447,2.0872,2.6804,25.5948,0.0068

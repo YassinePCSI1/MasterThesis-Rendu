@@ -1,0 +1,402 @@
+/Users/hamza/Codebase/MasterThesis/src/plotting.py:1061: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.tight_layout()
+[multi-agent robustness] Seed 1/50 (seed=200)
+[multi-agent robustness] Seed 2/50 (seed=201)
+[multi-agent robustness] Seed 3/50 (seed=202)
+[multi-agent robustness] Seed 4/50 (seed=203)
+[multi-agent robustness] Seed 5/50 (seed=204)
+[multi-agent robustness] Seed 6/50 (seed=205)
+[multi-agent robustness] Seed 7/50 (seed=206)
+[multi-agent robustness] Seed 8/50 (seed=207)
+[multi-agent robustness] Seed 9/50 (seed=208)
+[multi-agent robustness] Seed 10/50 (seed=209)
+[multi-agent robustness] Seed 11/50 (seed=210)
+[multi-agent robustness] Seed 12/50 (seed=211)
+[multi-agent robustness] Seed 13/50 (seed=212)
+[multi-agent robustness] Seed 14/50 (seed=213)
+[multi-agent robustness] Seed 15/50 (seed=214)
+[multi-agent robustness] Seed 16/50 (seed=215)
+[multi-agent robustness] Seed 17/50 (seed=216)
+[multi-agent robustness] Seed 18/50 (seed=217)
+[multi-agent robustness] Seed 19/50 (seed=218)
+[multi-agent robustness] Seed 20/50 (seed=219)
+[multi-agent robustness] Seed 21/50 (seed=220)
+[multi-agent robustness] Seed 22/50 (seed=221)
+[multi-agent robustness] Seed 23/50 (seed=222)
+[multi-agent robustness] Seed 24/50 (seed=223)
+[multi-agent robustness] Seed 25/50 (seed=224)
+[multi-agent robustness] Seed 26/50 (seed=225)
+[multi-agent robustness] Seed 27/50 (seed=226)
+[multi-agent robustness] Seed 28/50 (seed=227)
+[multi-agent robustness] Seed 29/50 (seed=228)
+[multi-agent robustness] Seed 30/50 (seed=229)
+[multi-agent robustness] Seed 31/50 (seed=230)
+[multi-agent robustness] Seed 32/50 (seed=231)
+[multi-agent robustness] Seed 33/50 (seed=232)
+[multi-agent robustness] Seed 34/50 (seed=233)
+[multi-agent robustness] Seed 35/50 (seed=234)
+[multi-agent robustness] Seed 36/50 (seed=235)
+[multi-agent robustness] Seed 37/50 (seed=236)
+[multi-agent robustness] Seed 38/50 (seed=237)
+[multi-agent robustness] Seed 39/50 (seed=238)
+[multi-agent robustness] Seed 40/50 (seed=239)
+[multi-agent robustness] Seed 41/50 (seed=240)
+[multi-agent robustness] Seed 42/50 (seed=241)
+[multi-agent robustness] Seed 43/50 (seed=242)
+[multi-agent robustness] Seed 44/50 (seed=243)
+[multi-agent robustness] Seed 45/50 (seed=244)
+[multi-agent robustness] Seed 46/50 (seed=245)
+[multi-agent robustness] Seed 47/50 (seed=246)
+[multi-agent robustness] Seed 48/50 (seed=247)
+[multi-agent robustness] Seed 49/50 (seed=248)
+[multi-agent robustness] Seed 50/50 (seed=249)
+[multi-agent robustness] Seed 1/50 (seed=100)
+[multi-agent robustness] Seed 2/50 (seed=101)
+[multi-agent robustness] Seed 3/50 (seed=102)
+[multi-agent robustness] Seed 4/50 (seed=103)
+[multi-agent robustness] Seed 5/50 (seed=104)
+[multi-agent robustness] Seed 6/50 (seed=105)
+[multi-agent robustness] Seed 7/50 (seed=106)
+[multi-agent robustness] Seed 8/50 (seed=107)
+[multi-agent robustness] Seed 9/50 (seed=108)
+[multi-agent robustness] Seed 10/50 (seed=109)
+[multi-agent robustness] Seed 11/50 (seed=110)
+[multi-agent robustness] Seed 12/50 (seed=111)
+[multi-agent robustness] Seed 13/50 (seed=112)
+[multi-agent robustness] Seed 14/50 (seed=113)
+[multi-agent robustness] Seed 15/50 (seed=114)
+[multi-agent robustness] Seed 16/50 (seed=115)
+[multi-agent robustness] Seed 17/50 (seed=116)
+[multi-agent robustness] Seed 18/50 (seed=117)
+[multi-agent robustness] Seed 19/50 (seed=118)
+[multi-agent robustness] Seed 20/50 (seed=119)
+[multi-agent robustness] Seed 21/50 (seed=120)
+[multi-agent robustness] Seed 22/50 (seed=121)
+[multi-agent robustness] Seed 23/50 (seed=122)
+[multi-agent robustness] Seed 24/50 (seed=123)
+[multi-agent robustness] Seed 25/50 (seed=124)
+[multi-agent robustness] Seed 26/50 (seed=125)
+[multi-agent robustness] Seed 27/50 (seed=126)
+[multi-agent robustness] Seed 28/50 (seed=127)
+[multi-agent robustness] Seed 29/50 (seed=128)
+[multi-agent robustness] Seed 30/50 (seed=129)
+[multi-agent robustness] Seed 31/50 (seed=130)
+[multi-agent robustness] Seed 32/50 (seed=131)
+[multi-agent robustness] Seed 33/50 (seed=132)
+[multi-agent robustness] Seed 34/50 (seed=133)
+[multi-agent robustness] Seed 35/50 (seed=134)
+[multi-agent robustness] Seed 36/50 (seed=135)
+[multi-agent robustness] Seed 37/50 (seed=136)
+[multi-agent robustness] Seed 38/50 (seed=137)
+[multi-agent robustness] Seed 39/50 (seed=138)
+[multi-agent robustness] Seed 40/50 (seed=139)
+[multi-agent robustness] Seed 41/50 (seed=140)
+[multi-agent robustness] Seed 42/50 (seed=141)
+[multi-agent robustness] Seed 43/50 (seed=142)
+[multi-agent robustness] Seed 44/50 (seed=143)
+[multi-agent robustness] Seed 45/50 (seed=144)
+[multi-agent robustness] Seed 46/50 (seed=145)
+[multi-agent robustness] Seed 47/50 (seed=146)
+[multi-agent robustness] Seed 48/50 (seed=147)
+[multi-agent robustness] Seed 49/50 (seed=148)
+[multi-agent robustness] Seed 50/50 (seed=149)
+[learner-comparison] single (1 learners) — seed 1/20  [1/60]
+[learner-comparison] single (1 learners) — seed 2/20  [2/60]
+[learner-comparison] single (1 learners) — seed 3/20  [3/60]
+[learner-comparison] single (1 learners) — seed 4/20  [4/60]
+[learner-comparison] single (1 learners) — seed 5/20  [5/60]
+[learner-comparison] single (1 learners) — seed 6/20  [6/60]
+[learner-comparison] single (1 learners) — seed 7/20  [7/60]
+[learner-comparison] single (1 learners) — seed 8/20  [8/60]
+[learner-comparison] single (1 learners) — seed 9/20  [9/60]
+[learner-comparison] single (1 learners) — seed 10/20  [10/60]
+[learner-comparison] single (1 learners) — seed 11/20  [11/60]
+[learner-comparison] single (1 learners) — seed 12/20  [12/60]
+[learner-comparison] single (1 learners) — seed 13/20  [13/60]
+[learner-comparison] single (1 learners) — seed 14/20  [14/60]
+[learner-comparison] single (1 learners) — seed 15/20  [15/60]
+[learner-comparison] single (1 learners) — seed 16/20  [16/60]
+[learner-comparison] single (1 learners) — seed 17/20  [17/60]
+[learner-comparison] single (1 learners) — seed 18/20  [18/60]
+[learner-comparison] single (1 learners) — seed 19/20  [19/60]
+[learner-comparison] single (1 learners) — seed 20/20  [20/60]
+[learner-comparison] duopoly (2 learners) — seed 1/20  [21/60]
+[learner-comparison] duopoly (2 learners) — seed 2/20  [22/60]
+[learner-comparison] duopoly (2 learners) — seed 3/20  [23/60]
+[learner-comparison] duopoly (2 learners) — seed 4/20  [24/60]
+[learner-comparison] duopoly (2 learners) — seed 5/20  [25/60]
+[learner-comparison] duopoly (2 learners) — seed 6/20  [26/60]
+[learner-comparison] duopoly (2 learners) — seed 7/20  [27/60]
+[learner-comparison] duopoly (2 learners) — seed 8/20  [28/60]
+[learner-comparison] duopoly (2 learners) — seed 9/20  [29/60]
+[learner-comparison] duopoly (2 learners) — seed 10/20  [30/60]
+[learner-comparison] duopoly (2 learners) — seed 11/20  [31/60]
+[learner-comparison] duopoly (2 learners) — seed 12/20  [32/60]
+[learner-comparison] duopoly (2 learners) — seed 13/20  [33/60]
+[learner-comparison] duopoly (2 learners) — seed 14/20  [34/60]
+[learner-comparison] duopoly (2 learners) — seed 15/20  [35/60]
+[learner-comparison] duopoly (2 learners) — seed 16/20  [36/60]
+[learner-comparison] duopoly (2 learners) — seed 17/20  [37/60]
+[learner-comparison] duopoly (2 learners) — seed 18/20  [38/60]
+[learner-comparison] duopoly (2 learners) — seed 19/20  [39/60]
+[learner-comparison] duopoly (2 learners) — seed 20/20  [40/60]
+[learner-comparison] triopoly (3 learners) — seed 1/20  [41/60]
+[learner-comparison] triopoly (3 learners) — seed 2/20  [42/60]
+[learner-comparison] triopoly (3 learners) — seed 3/20  [43/60]
+[learner-comparison] triopoly (3 learners) — seed 4/20  [44/60]
+[learner-comparison] triopoly (3 learners) — seed 5/20  [45/60]
+[learner-comparison] triopoly (3 learners) — seed 6/20  [46/60]
+[learner-comparison] triopoly (3 learners) — seed 7/20  [47/60]
+[learner-comparison] triopoly (3 learners) — seed 8/20  [48/60]
+[learner-comparison] triopoly (3 learners) — seed 9/20  [49/60]
+[learner-comparison] triopoly (3 learners) — seed 10/20  [50/60]
+[learner-comparison] triopoly (3 learners) — seed 11/20  [51/60]
+[learner-comparison] triopoly (3 learners) — seed 12/20  [52/60]
+[learner-comparison] triopoly (3 learners) — seed 13/20  [53/60]
+[learner-comparison] triopoly (3 learners) — seed 14/20  [54/60]
+[learner-comparison] triopoly (3 learners) — seed 15/20  [55/60]
+[learner-comparison] triopoly (3 learners) — seed 16/20  [56/60]
+[learner-comparison] triopoly (3 learners) — seed 17/20  [57/60]
+[learner-comparison] triopoly (3 learners) — seed 18/20  [58/60]
+[learner-comparison] triopoly (3 learners) — seed 19/20  [59/60]
+[learner-comparison] triopoly (3 learners) — seed 20/20  [60/60]
+[marl γ-sweep] γ=0.50, seed 1/20  [1/100]
+[marl γ-sweep] γ=0.50, seed 2/20  [2/100]
+[marl γ-sweep] γ=0.50, seed 3/20  [3/100]
+[marl γ-sweep] γ=0.50, seed 4/20  [4/100]
+[marl γ-sweep] γ=0.50, seed 5/20  [5/100]
+[marl γ-sweep] γ=0.50, seed 6/20  [6/100]
+[marl γ-sweep] γ=0.50, seed 7/20  [7/100]
+[marl γ-sweep] γ=0.50, seed 8/20  [8/100]
+[marl γ-sweep] γ=0.50, seed 9/20  [9/100]
+[marl γ-sweep] γ=0.50, seed 10/20  [10/100]
+[marl γ-sweep] γ=0.50, seed 11/20  [11/100]
+[marl γ-sweep] γ=0.50, seed 12/20  [12/100]
+[marl γ-sweep] γ=0.50, seed 13/20  [13/100]
+[marl γ-sweep] γ=0.50, seed 14/20  [14/100]
+[marl γ-sweep] γ=0.50, seed 15/20  [15/100]
+[marl γ-sweep] γ=0.50, seed 16/20  [16/100]
+[marl γ-sweep] γ=0.50, seed 17/20  [17/100]
+[marl γ-sweep] γ=0.50, seed 18/20  [18/100]
+[marl γ-sweep] γ=0.50, seed 19/20  [19/100]
+[marl γ-sweep] γ=0.50, seed 20/20  [20/100]
+[marl γ-sweep] γ=0.70, seed 1/20  [21/100]
+[marl γ-sweep] γ=0.70, seed 2/20  [22/100]
+[marl γ-sweep] γ=0.70, seed 3/20  [23/100]
+[marl γ-sweep] γ=0.70, seed 4/20  [24/100]
+[marl γ-sweep] γ=0.70, seed 5/20  [25/100]
+[marl γ-sweep] γ=0.70, seed 6/20  [26/100]
+[marl γ-sweep] γ=0.70, seed 7/20  [27/100]
+[marl γ-sweep] γ=0.70, seed 8/20  [28/100]
+[marl γ-sweep] γ=0.70, seed 9/20  [29/100]
+[marl γ-sweep] γ=0.70, seed 10/20  [30/100]
+[marl γ-sweep] γ=0.70, seed 11/20  [31/100]
+[marl γ-sweep] γ=0.70, seed 12/20  [32/100]
+[marl γ-sweep] γ=0.70, seed 13/20  [33/100]
+[marl γ-sweep] γ=0.70, seed 14/20  [34/100]
+[marl γ-sweep] γ=0.70, seed 15/20  [35/100]
+[marl γ-sweep] γ=0.70, seed 16/20  [36/100]
+[marl γ-sweep] γ=0.70, seed 17/20  [37/100]
+[marl γ-sweep] γ=0.70, seed 18/20  [38/100]
+[marl γ-sweep] γ=0.70, seed 19/20  [39/100]
+[marl γ-sweep] γ=0.70, seed 20/20  [40/100]
+[marl γ-sweep] γ=0.85, seed 1/20  [41/100]
+[marl γ-sweep] γ=0.85, seed 2/20  [42/100]
+[marl γ-sweep] γ=0.85, seed 3/20  [43/100]
+[marl γ-sweep] γ=0.85, seed 4/20  [44/100]
+[marl γ-sweep] γ=0.85, seed 5/20  [45/100]
+[marl γ-sweep] γ=0.85, seed 6/20  [46/100]
+[marl γ-sweep] γ=0.85, seed 7/20  [47/100]
+[marl γ-sweep] γ=0.85, seed 8/20  [48/100]
+[marl γ-sweep] γ=0.85, seed 9/20  [49/100]
+[marl γ-sweep] γ=0.85, seed 10/20  [50/100]
+[marl γ-sweep] γ=0.85, seed 11/20  [51/100]
+[marl γ-sweep] γ=0.85, seed 12/20  [52/100]
+[marl γ-sweep] γ=0.85, seed 13/20  [53/100]
+[marl γ-sweep] γ=0.85, seed 14/20  [54/100]
+[marl γ-sweep] γ=0.85, seed 15/20  [55/100]
+[marl γ-sweep] γ=0.85, seed 16/20  [56/100]
+[marl γ-sweep] γ=0.85, seed 17/20  [57/100]
+[marl γ-sweep] γ=0.85, seed 18/20  [58/100]
+[marl γ-sweep] γ=0.85, seed 19/20  [59/100]
+[marl γ-sweep] γ=0.85, seed 20/20  [60/100]
+[marl γ-sweep] γ=0.95, seed 1/20  [61/100]
+[marl γ-sweep] γ=0.95, seed 2/20  [62/100]
+[marl γ-sweep] γ=0.95, seed 3/20  [63/100]
+[marl γ-sweep] γ=0.95, seed 4/20  [64/100]
+[marl γ-sweep] γ=0.95, seed 5/20  [65/100]
+[marl γ-sweep] γ=0.95, seed 6/20  [66/100]
+[marl γ-sweep] γ=0.95, seed 7/20  [67/100]
+[marl γ-sweep] γ=0.95, seed 8/20  [68/100]
+[marl γ-sweep] γ=0.95, seed 9/20  [69/100]
+[marl γ-sweep] γ=0.95, seed 10/20  [70/100]
+[marl γ-sweep] γ=0.95, seed 11/20  [71/100]
+[marl γ-sweep] γ=0.95, seed 12/20  [72/100]
+[marl γ-sweep] γ=0.95, seed 13/20  [73/100]
+[marl γ-sweep] γ=0.95, seed 14/20  [74/100]
+[marl γ-sweep] γ=0.95, seed 15/20  [75/100]
+[marl γ-sweep] γ=0.95, seed 16/20  [76/100]
+[marl γ-sweep] γ=0.95, seed 17/20  [77/100]
+[marl γ-sweep] γ=0.95, seed 18/20  [78/100]
+[marl γ-sweep] γ=0.95, seed 19/20  [79/100]
+[marl γ-sweep] γ=0.95, seed 20/20  [80/100]
+[marl γ-sweep] γ=0.99, seed 1/20  [81/100]
+[marl γ-sweep] γ=0.99, seed 2/20  [82/100]
+[marl γ-sweep] γ=0.99, seed 3/20  [83/100]
+[marl γ-sweep] γ=0.99, seed 4/20  [84/100]
+[marl γ-sweep] γ=0.99, seed 5/20  [85/100]
+[marl γ-sweep] γ=0.99, seed 6/20  [86/100]
+[marl γ-sweep] γ=0.99, seed 7/20  [87/100]
+[marl γ-sweep] γ=0.99, seed 8/20  [88/100]
+[marl γ-sweep] γ=0.99, seed 9/20  [89/100]
+[marl γ-sweep] γ=0.99, seed 10/20  [90/100]
+[marl γ-sweep] γ=0.99, seed 11/20  [91/100]
+[marl γ-sweep] γ=0.99, seed 12/20  [92/100]
+[marl γ-sweep] γ=0.99, seed 13/20  [93/100]
+[marl γ-sweep] γ=0.99, seed 14/20  [94/100]
+[marl γ-sweep] γ=0.99, seed 15/20  [95/100]
+[marl γ-sweep] γ=0.99, seed 16/20  [96/100]
+[marl γ-sweep] γ=0.99, seed 17/20  [97/100]
+[marl γ-sweep] γ=0.99, seed 18/20  [98/100]
+[marl γ-sweep] γ=0.99, seed 19/20  [99/100]
+[marl γ-sweep] γ=0.99, seed 20/20  [100/100]
+[marl shock-experiment] seed 1/20 (seed=600)
+[marl shock-experiment] seed 2/20 (seed=601)
+[marl shock-experiment] seed 3/20 (seed=602)
+[marl shock-experiment] seed 4/20 (seed=603)
+[marl shock-experiment] seed 5/20 (seed=604)
+[marl shock-experiment] seed 6/20 (seed=605)
+[marl shock-experiment] seed 7/20 (seed=606)
+[marl shock-experiment] seed 8/20 (seed=607)
+[marl shock-experiment] seed 9/20 (seed=608)
+[marl shock-experiment] seed 10/20 (seed=609)
+[marl shock-experiment] seed 11/20 (seed=610)
+[marl shock-experiment] seed 12/20 (seed=611)
+[marl shock-experiment] seed 13/20 (seed=612)
+[marl shock-experiment] seed 14/20 (seed=613)
+[marl shock-experiment] seed 15/20 (seed=614)
+[marl shock-experiment] seed 16/20 (seed=615)
+[marl shock-experiment] seed 17/20 (seed=616)
+[marl shock-experiment] seed 18/20 (seed=617)
+[marl shock-experiment] seed 19/20 (seed=618)
+[marl shock-experiment] seed 20/20 (seed=619)
+[marl forced-deviation] seed 1/20 (seed=700)
+[marl forced-deviation] seed 2/20 (seed=701)
+[marl forced-deviation] seed 3/20 (seed=702)
+[marl forced-deviation] seed 4/20 (seed=703)
+[marl forced-deviation] seed 5/20 (seed=704)
+[marl forced-deviation] seed 6/20 (seed=705)
+[marl forced-deviation] seed 7/20 (seed=706)
+[marl forced-deviation] seed 8/20 (seed=707)
+[marl forced-deviation] seed 9/20 (seed=708)
+[marl forced-deviation] seed 10/20 (seed=709)
+[marl forced-deviation] seed 11/20 (seed=710)
+[marl forced-deviation] seed 12/20 (seed=711)
+[marl forced-deviation] seed 13/20 (seed=712)
+[marl forced-deviation] seed 14/20 (seed=713)
+[marl forced-deviation] seed 15/20 (seed=714)
+[marl forced-deviation] seed 16/20 (seed=715)
+[marl forced-deviation] seed 17/20 (seed=716)
+[marl forced-deviation] seed 18/20 (seed=717)
+[marl forced-deviation] seed 19/20 (seed=718)
+[marl forced-deviation] seed 20/20 (seed=719)
+[marl stackelberg] leader=US — seed 1/20
+[marl stackelberg] leader=US — seed 2/20
+[marl stackelberg] leader=US — seed 3/20
+[marl stackelberg] leader=US — seed 4/20
+[marl stackelberg] leader=US — seed 5/20
+[marl stackelberg] leader=US — seed 6/20
+[marl stackelberg] leader=US — seed 7/20
+[marl stackelberg] leader=US — seed 8/20
+[marl stackelberg] leader=US — seed 9/20
+[marl stackelberg] leader=US — seed 10/20
+[marl stackelberg] leader=US — seed 11/20
+[marl stackelberg] leader=US — seed 12/20
+[marl stackelberg] leader=US — seed 13/20
+[marl stackelberg] leader=US — seed 14/20
+[marl stackelberg] leader=US — seed 15/20
+[marl stackelberg] leader=US — seed 16/20
+[marl stackelberg] leader=US — seed 17/20
+[marl stackelberg] leader=US — seed 18/20
+[marl stackelberg] leader=US — seed 19/20
+[marl stackelberg] leader=US — seed 20/20
+[marl stackelberg] leader=OPEC — seed 1/20
+[marl stackelberg] leader=OPEC — seed 2/20
+[marl stackelberg] leader=OPEC — seed 3/20
+[marl stackelberg] leader=OPEC — seed 4/20
+[marl stackelberg] leader=OPEC — seed 5/20
+[marl stackelberg] leader=OPEC — seed 6/20
+[marl stackelberg] leader=OPEC — seed 7/20
+[marl stackelberg] leader=OPEC — seed 8/20
+[marl stackelberg] leader=OPEC — seed 9/20
+[marl stackelberg] leader=OPEC — seed 10/20
+[marl stackelberg] leader=OPEC — seed 11/20
+[marl stackelberg] leader=OPEC — seed 12/20
+[marl stackelberg] leader=OPEC — seed 13/20
+[marl stackelberg] leader=OPEC — seed 14/20
+[marl stackelberg] leader=OPEC — seed 15/20
+[marl stackelberg] leader=OPEC — seed 16/20
+[marl stackelberg] leader=OPEC — seed 17/20
+[marl stackelberg] leader=OPEC — seed 18/20
+[marl stackelberg] leader=OPEC — seed 19/20
+[marl stackelberg] leader=OPEC — seed 20/20
+[marl stackelberg] leader=RUS — seed 1/20
+[marl stackelberg] leader=RUS — seed 2/20
+[marl stackelberg] leader=RUS — seed 3/20
+[marl stackelberg] leader=RUS — seed 4/20
+[marl stackelberg] leader=RUS — seed 5/20
+[marl stackelberg] leader=RUS — seed 6/20
+[marl stackelberg] leader=RUS — seed 7/20
+[marl stackelberg] leader=RUS — seed 8/20
+[marl stackelberg] leader=RUS — seed 9/20
+[marl stackelberg] leader=RUS — seed 10/20
+[marl stackelberg] leader=RUS — seed 11/20
+[marl stackelberg] leader=RUS — seed 12/20
+[marl stackelberg] leader=RUS — seed 13/20
+[marl stackelberg] leader=RUS — seed 14/20
+[marl stackelberg] leader=RUS — seed 15/20
+[marl stackelberg] leader=RUS — seed 16/20
+[marl stackelberg] leader=RUS — seed 17/20
+[marl stackelberg] leader=RUS — seed 18/20
+[marl stackelberg] leader=RUS — seed 19/20
+[marl stackelberg] leader=RUS — seed 20/20
+[marl capacity] disabled — seed 1/20
+[marl capacity] disabled — seed 2/20
+[marl capacity] disabled — seed 3/20
+[marl capacity] disabled — seed 4/20
+[marl capacity] disabled — seed 5/20
+[marl capacity] disabled — seed 6/20
+[marl capacity] disabled — seed 7/20
+[marl capacity] disabled — seed 8/20
+[marl capacity] disabled — seed 9/20
+[marl capacity] disabled — seed 10/20
+[marl capacity] disabled — seed 11/20
+[marl capacity] disabled — seed 12/20
+[marl capacity] disabled — seed 13/20
+[marl capacity] disabled — seed 14/20
+[marl capacity] disabled — seed 15/20
+[marl capacity] disabled — seed 16/20
+[marl capacity] disabled — seed 17/20
+[marl capacity] disabled — seed 18/20
+[marl capacity] disabled — seed 19/20
+[marl capacity] disabled — seed 20/20
+[marl capacity] enabled — seed 1/20
+[marl capacity] enabled — seed 2/20
+[marl capacity] enabled — seed 3/20
+[marl capacity] enabled — seed 4/20
+[marl capacity] enabled — seed 5/20
+[marl capacity] enabled — seed 6/20
+[marl capacity] enabled — seed 7/20
+[marl capacity] enabled — seed 8/20
+[marl capacity] enabled — seed 9/20
+[marl capacity] enabled — seed 10/20
+[marl capacity] enabled — seed 11/20
+[marl capacity] enabled — seed 12/20
+[marl capacity] enabled — seed 13/20
+[marl capacity] enabled — seed 14/20
+[marl capacity] enabled — seed 15/20
+[marl capacity] enabled — seed 16/20
+[marl capacity] enabled — seed 17/20
+[marl capacity] enabled — seed 18/20
+[marl capacity] enabled — seed 19/20
+[marl capacity] enabled — seed 20/20

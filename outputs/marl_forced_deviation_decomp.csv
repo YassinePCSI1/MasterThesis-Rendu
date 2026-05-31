@@ -1,0 +1,2 @@
+deviator,deviation_q,deviation_start,deviation_duration,window,mean_pre_price,mean_during_price,mean_post_price,pre_q_US,pre_q_OPEC,pre_q_RUS,during_q_US,during_q_OPEC,during_q_RUS,post_q_US,post_q_OPEC,post_q_RUS,delta_q_dev_during_minus_pre,delta_q_non_dev_total,observed_price_drop,mechanical_price_drop,strategic_price_drop,mechanical_share,strategic_share
+OPEC,40.0,18750.0,625.0,625.0,79.7845,64.1818,74.3644,15.4155,24.9768,19.8288,16.5957,38.5714,20.6511,14.9571,30.5794,20.1024,13.5946,2.0025,15.6027,13.5946,2.0081,0.8713,0.1287

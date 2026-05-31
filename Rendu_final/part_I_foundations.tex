@@ -1,0 +1,427 @@
+\section{Foundations: The Static Market Environment}
+\label{sec:foundations}
+
+This section and Section~\ref{sec:dynamics} establish the
+theoretical and quantitative anchor of the thesis: a calibrated
+oligopoly model and the classical equilibrium concepts against
+which the original contribution is measured. That contribution
+itself, the multi-agent learning experiment and its
+identification of a path-dependent collusive attractor, is
+developed in Section~\ref{sec:marl}. A reader already familiar
+with static and repeated oligopoly theory may read the present
+two sections as calibration and proceed directly to the learning
+experiments; a reader new to the field will find each concept
+defined before it is used.
+
+\subsection{Model overview and calibration}
+\label{subsec:model}
+
+We model the global crude oil market as a strategic oligopoly. The word
+``oligopoly'' denotes an industry in which a small number of producers
+each control enough output to influence the market price
+\citep{bresnahan1989}; the implication is that production decisions are
+inherently strategic, because every producer must anticipate how its
+choice affects the price that its rivals also receive. The three blocs
+we model are the OPEC core (treated as a single Gulf-led player), the
+Russian Federation, and the United States shale sector. Rather than
+relying on a single game-theoretic frame, we construct a progressive
+computational pipeline in which each layer relaxes one assumption of the
+preceding one. The simplest model, static Cournot competition, provides
+the non-cooperative benchmark. Every subsequent extension adds one
+dimension of realism: timing (Stackelberg), commitment (capacity),
+welfare (deadweight loss and carbon taxation), strategic variable
+(Bertrand), repeated interaction (Folk Theorem), mediated recommendations
+(correlated equilibrium), bargaining (Shapley values), uncertainty
+\citep{greenporter1984}, and population-level selection (evolutionary
+dynamics). This architecture is consistent with the escalation logic
+recommended by \citet[p.~??]{tirole1988} and parallels the framework adopted by
+\citet{alcelay2017}, to whose three-player Cournot setting our
+calibration is closest.
+
+The demand side of the model is given by a linear inverse demand,
+introduced for analytical tractability and because it is the workhorse
+specification of the applied oligopoly literature since
+\citet[p.~??]{cournot1838}. The function takes the form
+\begin{equation}
+P(Q) \;=\; a - b\,Q,
+\label{eq:1}
+\end{equation}
+where $P$ denotes the market-clearing price in dollars per barrel,
+$Q$ is total output in millions of barrels per day (mbd), $a$ is the
+demand intercept (the choke price at which demand falls to zero), and
+$b$ is the demand slope (the dollars-per-barrel price response to a
+one-unit change in total supply). Each producer
+$i \in \{\text{US, OPEC, RUS}\}$ chooses an output $q_i$ to maximise its
+period profit
+\begin{equation}
+\pi_i \;=\; (P - c_i)\, q_i \;=\; (a - b Q - c_i)\, q_i,
+\label{eq:2}
+\end{equation}
+where $c_i$ is its constant marginal cost. The first term in (\ref{eq:2})
+is the per-barrel margin and the second is the volume; the product is
+the producer's profit-relevant cash flow per period. We calibrate
+$a = 140$, $b = 1.0$, $c_{\text{US}} = 45$, $c_{\text{OPEC}} = 20$,
+$c_{\text{RUS}} = 35$, and discount factor $\delta = 0.95$. The
+calibration is reported in \appref{app:calibration} at the back of the document.
+
+The demand intercept $a = 140$ corresponds to the upper end of the
+long-run price scenarios published by the International Energy Agency
+\citep{iea2019}; reading it as a choke price is consistent with
+high-stress scenarios used by central banks for inflation modelling. The
+slope $b = 1.0$ is the standard normalisation in the applied oligopoly
+literature \citep[p.~??]{tirole1988}; at the baseline triopoly equilibrium it
+implies an own-price demand elasticity of approximately $-0.75$, broadly
+consistent with the medium-run elasticities of $-0.4$ to $-1.0$ reported
+by the U.S.\ Energy Information Administration in its Short-Term Energy
+Outlook. The quarterly discount factor $\delta = 0.95$ implies an
+annualized time preference of roughly 19 percent; we read this as a
+reduced-form proxy for the political, fiscal, and sanctions-related
+impatience that depresses the effective planning horizon of producing
+states below the risk-free rate.
+
+We now explain why each marginal cost was set at its calibrated level.
+For OPEC we set $c_{\text{OPEC}} = 20$. The Gulf core (Saudi Arabia,
+Kuwait, the United Arab Emirates, Iraq) operates onshore conventional
+fields with some of the lowest lifting costs in the world: Saudi
+Aramco's reported lifting cost has been in the \$3 to \$5 per barrel
+range for over a decade, with broader Gulf averages in the \$5 to \$10
+range \citep{bp2022,eia2024}. Layering on royalties, infrastructure
+depreciation, and the implicit fiscal contribution that funds the state
+operating model brings the effective short-run marginal cost to roughly
+\$15 to \$20. We take the upper bound of that band to reflect the
+average OPEC core producer rather than only Saudi Aramco, and to avoid
+overstating the cost advantage in the cartel analysis.
+
+For Russia we set $c_{\text{RUS}} = 35$. Western Siberian conventional
+fields have lifting costs of approximately \$15 to \$25 per barrel
+\citep[p.~??]{henderson2015,henderson2011}\citep{imf2021}. To this we add the Urals export transport
+differential (pipeline tariffs to Baltic and Black Sea ports, plus the
+structural discount of Urals to Brent), which contributes a further
+\$8 to \$12, and the incremental post-2022 sanctions costs (shadow
+fleet, intermediated trade, insurance) of roughly \$5
+\citep{simolasolanko2017,eia2025}. The sum sits around \$35, consistent
+with the IMF Russia Article~IV estimates \citep{imf2021} and with the
+average Urals realization observed in 2023 to 2025. Our model holds this number
+constant; in reality, the sanctions overhead has varied with the G7
+price cap regime, but the static specification cannot accommodate that
+dynamic.
+
+For the United States we set $c_{\text{US}} = 45$. US shale producers
+have well-level break-evens that vary widely by play and well quality,
+from below \$40 in the core Permian to above \$70 in marginal Bakken
+locations \citep{dallasfed2026,smith2016}. We choose \$45 as the average
+well-level marginal cost of new wells in major plays, which is the
+relevant number for short-run best-response decisions. Firm-level
+full-cycle break-evens, which include corporate overhead,
+decline-replacement capex, and required returns to equity, were reported
+at \$61 to \$62 per barrel in the Q1 2026 Dallas Fed survey
+\citep{dallasfed2026}, but those lie outside our short-run analysis. The
+post-2020 capital-discipline regime documented by \citet{kraneagerton2015}
+and reaffirmed by the same survey implies that US shale's effective supply curve has
+flattened, which our static model captures by treating $c_{\text{US}}$
+as constant.
+
+Three limitations of the calibration deserve acknowledgment. First,
+linear demand abstracts from the documented convexity of crude oil
+prices when spare capacity is tight \citep{till2016}. Second, each
+``player'' is in reality a coalition: the OPEC core averages over twelve
+heterogeneous members, US shale is a fragmented private-sector industry,
+and Russia's effective cost varies by destination market
+\citep[p.~??]{henderson2015}\citep{eia2025}. Third, marginal costs are held constant,
+while in reality they vary with cumulative extraction, technological
+learning, and logistics. These simplifications follow standard practice
+in applied oligopoly modelling
+\citep{salant1976,huppmannholz2012,alcelay2017} and are necessary to
+maintain comparability across the frameworks we implement. The full
+step-by-step ``escalation table'' is provided in \appref{app:reading-guide}; each row
+identifies one framework, the question it addresses, and the assumption
+it relaxes relative to its predecessor.
+
+\subsection{Static Cournot equilibrium}
+\label{subsec:cournot}
+
+We begin with the simultaneous quantity game, named after
+\citet[p.~??]{cournot1838}, the first author to formalize oligopolistic
+interaction. In a Cournot game, each producer chooses an output level
+without observing the choices of its rivals, and the market-clearing
+price is determined by the sum of all outputs through the inverse-demand
+function. The Nash equilibrium of a Cournot game is the mutually
+best-responding profile: each player's quantity is optimal given the
+quantities chosen by everyone else, so no player can unilaterally
+improve its profit by deviating. The Cournot frame is the natural
+benchmark for oil markets because oil producers actually compete on
+quantities, not on posted prices: OPEC announces production targets, not
+barrel prices, and the spot price is set in real time by exchange-based
+trading on the resulting aggregate supply. We solve the model for both
+the duopoly (OPEC and US) and the triopoly (OPEC, US, Russia), following
+the three-player structure of \citet{alcelay2017}.
+
+In the duopoly we obtain total output $Q = 71.67$ mbd, equilibrium price
+$P = \$68.33/\text{bbl}$, and profits of 2,336.11 for OPEC and 544.44
+for US shale.\footnote{Profit, welfare, and surplus figures throughout
+are deterministic outputs of the calibrated simulator, reported to two
+decimals for reproducibility. The precision reflects the model's
+internal arithmetic on stylised parameters, not a claim of empirical
+accuracy at that resolution.} Adding Russia as a third strategic player shifts the
+equilibrium to $Q = 80.00$ mbd, $P = \$60.00/\text{bbl}$, with profits
+of 1,600.00 for OPEC, 225.00 for US, and 625.00 for Russia, consumer
+surplus of 3,200.00, and total welfare of 5,650.00 (see Figures~1,
+2 and~3). Russia's entry adds 8.33 mbd of output, lowers the price by
+\$8.33, erodes OPEC profit by 736.11 units (a 31.5 percent decline), and
+raises welfare by 201.39 units. The mechanism is exactly the one
+identified by \citet{salant1976} and \citet{novshek1985}: a new entrant
+with intermediate cost simultaneously expands aggregate supply and
+compresses the incumbent's margin. \citet{schmalensee1987} shows further
+that cost asymmetry shifts the unconstrained collusive optimum toward
+the low-cost producer, which is why OPEC retains the largest share even
+after Russia's entry. This quantitative finding gives a clean economic
+reading of the 2016 OPEC+ formation: Russia's standalone presence as a
+Cournot rival destroyed roughly 736 profit units for OPEC, which is
+precisely the surplus that the OPEC+ coordination mechanism subsequently
+attempted to recover.
+
+Comparative statics on the demand intercept confirm the linearity of the
+triopoly solution. Sweeping $a$ from 112 to 168, equilibrium price moves
+from \$53 to \$67 (slope $dP/da = 1/4$) and total output from 59 to 101
+mbd (slope $dQ/da = 3/4$), exactly reproducing the closed-form
+predictions of the asymmetric Cournot model with $N = 3$, namely
+$dP/da = 1/(N+1)$ and $dQ/da = N/(N+1)$ (see Figure~4). This perfect
+linearity is convenient for diagnostics, because any deviation in the
+simulator output would signal a coding or calibration error; it is also
+the chief reason we are confident in the comparative statics that
+follow. The linear response is, however, a property of the demand
+specification and should not be over-interpreted. The empirical
+price-quantity relationship in physical crude markets is markedly
+convex once OPEC spare capacity falls below roughly 2 mbd:
+\citet{till2016} documents exactly this regime, in which a small
+additional supply deficit produces a disproportionately large price
+spike. Our linear model captures the first-order direction of these
+effects but not the curvature, and we therefore read the slopes above
+as lower bounds on the price sensitivity that would obtain in a
+tight-capacity scenario such as the February 2026 Hormuz closure.
+
+\subsection{Market power and first-mover advantage}
+\label{subsec:marketpower}
+
+To quantify the degree of market concentration we use two standard
+metrics of industrial organisation, both of which we introduce before
+reporting our results. The Lerner index $L_i = (P - c_i)/P$, due to
+\citet{lerner1934}, measures the gap between price and the marginal cost
+of producer~$i$, expressed as a fraction of the price. It equals zero
+under perfect competition (price equals marginal cost) and approaches
+one as the producer's pricing power rises \citep{bresnahan1989}. The
+Herfindahl--Hirschman Index $\mathrm{HHI} = \sum_i s_i^2 \times 10{,}000$,
+where $s_i$ is the output share of producer~$i$, measures aggregate
+market concentration. It ranges from close to zero in an atomistic
+market to 10,000 in a pure monopoly. By the threshold used in the U.S.\
+Horizontal Merger Guidelines, an HHI above 2,500 places a market in the
+``highly concentrated'' category. Both indices were popularised in the
+empirical industrial-organisation literature surveyed in
+\citet{bresnahan1989}.
+
+Our simulations yield an HHI above 2,500 in every market structure we
+test, which formally establishes that the oil market is, by U.S.\
+Department of Justice criteria, highly concentrated; this is not a
+trivial finding because the result holds even in the triopoly, when
+total industry output is at its largest. The OPEC Lerner index ranges
+from 0.57 (when OPEC is the Stackelberg leader, defined below) to 0.71
+(in the duopoly), and is the highest among the three players in every
+configuration (see Figure~5). The result is consistent with the
+calibrated OPEC market-power trajectories of \citet{huppmannholz2012}
+and \citet{huppmann2013}, who estimate a conjectural-variation parameter
+$\theta$ for OPEC in the range 0.5 to 0.7 throughout 2003 to 2011. In
+the standard \citet{bresnahan1989} identity, the industry-weighted
+Lerner index satisfies $L = \theta/\varepsilon$; at our equilibrium
+elasticity $|\varepsilon| \approx 0.75$, that $\theta$-range translates
+to $L \in [0.67, 0.93]$. Our triopoly-Nash OPEC Lerner of
+$(60-20)/60 = 0.67$ sits exactly at the lower edge of this empirical
+band, which is the expected position once US shale entry is taken into
+account: Huppmann's Figure~3 shows observed prices tracking the
+calibrated oligopoly line below the pure-Cournot prediction, indicating
+that OPEC behaves slightly less aggressively than pure Cournot would
+imply. The qualitative finding that OPEC carries the largest Lerner in
+every market structure is therefore robust across two independent
+methodologies (ours, which is calibrated; theirs, which is
+econometrically estimated) and is driven by the underlying cost
+asymmetry rather than by any specific assumption about strategic
+behaviour.
+
+A Lerner index, however, only measures market power at the
+simultaneous-move equilibrium. It is silent on whether the structural
+cost advantage we have just documented can be amplified by strategic
+timing. To answer that question, we now relax the simultaneity
+assumption that Cournot imposes. The \citet[p.~??]{stackelberg1934} model
+\citep[on whose original formulation see][]{baumgartner2001}
+allows one player, which is the leader, to choose its output first; the
+followers then observe the leader's quantity before choosing their own.
+The leader can therefore optimise along the followers' best-response
+functions rather than at the symmetric intersection point, which
+generates a first-mover advantage \citep{dixit1980}\citep[p.~??]{tirole1988}. The size
+of that advantage is an empirical question: it depends on both the cost
+gap and the slope of the followers' reaction functions, and we now
+quantify it for each candidate leader.
+
+When OPEC acts as Stackelberg leader, it expands output to 93.33 mbd
+(the largest single-player output in any structure), drives the price
+down to \$46.67/bbl, and earns 2,133.33 in profit, a first-mover
+advantage of 533.33 over the simultaneous Nash benchmark. When US shale
+or Russia leads, the premium collapses to 75.00 and 208.33 respectively
+(see Figure~6). The asymmetry has a clean economic reading: the leader's
+benefit from expanding output rises with its cost advantage, because the
+residual margin $P - c$ stays positive at quantities that drive
+higher-cost rivals toward zero. \citet{beharritz2017} calibrate this
+logic for the 2014 to 2016 episode and identify a market-share threshold
+above which a low-cost swing producer prefers to flood the market rather
+than to accommodate. Our Stackelberg-OPEC scenario, in which US profit
+collapses from 225.00 to 1.67, is the quantitative counterpart of that
+mechanism and reads naturally as the regime that Saudi Arabia
+approximated during 2015 and again, more selectively, in March to April
+2020. The combination of structural (cost) and strategic (timing)
+advantage explains why no other producer has been able to displace OPEC
+as the implicit residual setter of the OPEC+ quota envelope, despite
+the substantial growth of US shale through 2024.
+
+\subsection{Capacity constraints}
+\label{subsec:capacity}
+
+The preceding analysis assumes that each producer can supply any
+quantity its best-response function calls for. In reality, each producer
+faces a physical capacity ceiling: the upper bound on output that its
+existing wells, pipelines, terminals, and processing infrastructure can
+deliver in a given period. We calibrate $\mathrm{cap}_{\text{US}} = 30$,
+$\mathrm{cap}_{\text{OPEC}} = 40$, and $\mathrm{cap}_{\text{RUS}} = 35$
+mbd, levels consistent with current installed capacity plus a credible
+six-month ramp; \appref{app:calibration} reports the empirical sources underlying
+each value. A constraint is said to ``bind'' at a given equilibrium when
+the player's optimal unconstrained output equals its cap; when this
+happens, the cap restricts the strategic options of the binding player.
+In a dynamic context, capacity is also a commitment device in the sense
+of \citet{dixit1980}: unused capacity makes future flooding credible and
+therefore alters rivals' incentives even when it is never deployed.
+
+At the static Nash, OPEC's optimal unconstrained output of 40.00 mbd
+exactly hits its capacity ceiling, so OPEC is the binding player; under
+cartel quotas, no constraint binds, because the cooperative agreement
+restricts output below every physical ceiling (see Figures~7 and~8).
+Two implications follow. First, switching constraints on raises the
+critical discount factor $\delta^*$ for every player, because binding
+caps weaken the punishment phase by limiting the volume the cheated
+party can flood with (see Figure~9). Second, expanding OPEC's capacity
+ceiling has the opposite effect: sweeping
+$\mathrm{cap}_{\text{OPEC}}$ from 25 to 60 mbd lowers $\delta^*$ from
+0.850 to 0.529 (see Figure~10). Both statements are consistent because
+they refer to different comparisons; we record this distinction
+explicitly because it is easy to confuse.
+
+The policy reading is direct. Saudi Arabia's persistent maintenance of
+1.5 to 2.0 mbd of idle capacity, often criticized domestically as
+wasteful, is rational because unused capacity is precisely what makes
+the threat of retaliatory flooding credible and therefore lowers the
+cooperation threshold for every member. \citet{till2016} in \appref{app:till}
+provides the empirical counterpart, showing that prices become convex
+in the supply deficit once OPEC spare capacity falls below a critical
+threshold. The 2026 closure of the Strait of Hormuz on February~28
+\citep{reuters2026}, which sent Brent above \$100/bbl and prompted a
+record inventory drawdown \citep{iea2026omr}, is a contemporary
+illustration of that convexity and of the value of spare capacity as a
+stabilisation buffer.
+
+\subsection{Welfare and deadweight loss}
+\label{subsec:welfare}
+
+We now evaluate the social impact of each market structure. To do so we
+use the standard welfare decomposition of microeconomic theory. Consumer
+surplus (CS) measures the area between the demand curve and the price
+line, capturing the aggregate dollar value that consumers receive above
+what they pay. Producer surplus (PS) measures the area between the
+price line and the supply curve, capturing the aggregate margin that
+producers earn above their marginal cost. Total welfare
+$W = \mathrm{CS} + \mathrm{PS}$ is the social value generated by the
+market. Deadweight loss (DWL) is the welfare lost relative to the
+perfectly competitive benchmark, in which price equals marginal cost;
+algebraically, $\mathrm{DWL} = W^{\text{competitive}} - W^{\text{actual}}$.
+This decomposition follows \citet[p.~??]{mwg1995} and \citet[p.~??]{tirole1988}.
+
+Under our calibration the competitive benchmark yields $W = 7{,}200$
+with zero deadweight loss. At the static Nash, $\mathrm{DWL} = 800$ and
+$W = 5{,}650$. Stackelberg-OPEC delivers $\mathrm{DWL} = 355.56$ and
+$W = 6{,}627.78$, while the cartel inflicts $\mathrm{DWL} = 1{,}800$ and
+$W = 4{,}837.50$, a welfare gap of $2{,}362.50$ units relative to
+competition (see Figures~11 and~12). The deadweight-loss ranking, from
+least to most distortionary, is competitive (0), Stackelberg-OPEC
+(355.6), Stackelberg-Russia (501.4), Stackelberg-US (612.5), Nash
+(800), and cartel (1,800). That Stackelberg leadership by the
+lowest-cost player generates the highest welfare among realistic
+oligopoly structures is counter-intuitive but economically clean: OPEC's
+cost advantage means that production is allocated to the most efficient
+producer, so the productive inefficiency of the symmetric Nash (in which
+higher-cost firms produce too much) is reduced. The cartel is the worst
+case because it combines allocative distortion (price above marginal
+cost) with quota-induced productive distortion.
+
+A particularly instructive extension is the interaction with a Pigouvian
+per-barrel carbon tax $\tau$. The Pigouvian framework
+\citep[p.~??]{pigou1920} prescribes a tax equal to the marginal external damage
+caused by an activity, internalizing the externality at the producer
+level. We sweep $\tau \in \{0, 10, 20, 30, 40, 50\}$. The collusion
+premium, defined as the ratio of cartel to Nash joint profit minus one,
+shrinks from 23.98 percent at $\tau = 0$ to 10.92 percent at $\tau = 50$
+(see Figures~13 and~14). At high tax levels the cartel's output
+restriction partially mimics the socially desired reduction in
+fossil-fuel consumption, which we label the ``green-cartel'' effect:
+collusion and climate policy point in the same direction. The result
+should not be read as an endorsement of cartelization. A Pigouvian
+carbon tax is strictly more efficient, because it achieves the same
+quantity reduction while generating fiscal revenue and recycling part of
+the loss into productive uses; cartels, in contrast, redistribute
+roughly 1,400 units of consumer surplus to producers while destroying
+1,000 units in deadweight loss.
+
+\subsection{Bertrand price competition: robustness check}
+\label{subsec:bertrand}
+
+So far, we have assumed Cournot competition, in which producers choose
+quantities. The natural alternative is Bertrand competition, in which
+they choose prices. In its pure form, the \citet{bertrand1883} game with
+homogeneous products and constant marginal cost produces the so-called
+Bertrand paradox: even with only two producers, undercutting drives the
+equilibrium price down to marginal cost. Pure-Bertrand is rarely a
+realistic description of upstream oil markets because production is
+capacity-constrained and crude grades are differentiated. We therefore
+implement a differentiated-Bertrand specification in which each producer
+faces a downward-sloping per-player demand and the substitution
+parameter $\sigma \in [0,1]$ controls the degree of cross-grade
+interchangeability: $\sigma = 0$ corresponds to independent monopolies
+(no substitution), $\sigma = 1$ to perfect substitutes (the homogeneous
+Bertrand case). This setting follows the \citet{maskintirole1988}
+dynamic Bertrand framework and the standard differentiated-oligopoly
+literature.
+
+At the baseline $\sigma = 0.6$ (\appref{app:calibration} for reasoning behind this
+calibration), which we read as the medium differentiation across WTI,
+Brent, and Urals grades, the Bertrand-Nash average price is
+\$35.90/bbl, far below the Cournot-Nash price of \$60.00/bbl (see
+Figures~15 and~16). As \citet{bertrand1883} predicted, price competition
+is more aggressive than quantity competition, and the equilibrium
+converges toward marginal-cost pricing as $\sigma$ approaches one (see
+Figure~17). Two qualifications must be flagged. The Bertrand and Cournot
+specifications use different demand structures (per-player versus
+aggregate), so absolute levels are not directly comparable; only the
+qualitative ordering matters. We also document a corner-solution
+artifact in the cooperative Bertrand optimisation at very low $\sigma$
+(0.1 to 0.2), which we treat as a numerical limitation rather than an
+economic finding.
+
+Two qualitative results survive intact. The producer ranking
+OPEC $>$ Russia $>$ US is preserved across competition modes, with
+OPEC's profit rising in $\sigma$ because Bertrand convergence favours the
+lowest-cost producer. The cooperation gap also persists: the cooperative
+Bertrand average price exceeds the Bertrand-Nash by \$15.35, and joint
+profit is roughly double (see Figure~18). This robustness, in the spirit
+of \citet{maskintirole1988}, is reassuring: the central object of the
+next section, the incentive to collude and the conditions under which
+collusion can be sustained, does not depend on whether producers are
+modelled as choosing quantities or prices. We retain Cournot for the
+remainder of the analysis because it matches OPEC's institutional
+reality, in which quotas, not posted prices, are the negotiated
+instrument.

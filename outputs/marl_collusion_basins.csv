@@ -1,0 +1,21 @@
+regime,basin,count,proportion,wilson_95_low,wilson_95_high
+triopoly_greedy,predatory,0,0.0,0.0,0.0714
+triopoly_greedy,nash_like,3,0.06,0.0206,0.1622
+triopoly_greedy,partial_collusion,26,0.52,0.3851,0.652
+triopoly_greedy,supra_cartel,21,0.42,0.2937,0.5577
+triopoly_greedy,cooperative_any (CI >= 0.20),47,0.94,0.8378,0.9794
+duopoly_greedy,predatory,44,0.88,0.7619,0.9438
+duopoly_greedy,nash_like,6,0.12,0.0562,0.2381
+duopoly_greedy,partial_collusion,0,0.0,0.0,0.0714
+duopoly_greedy,supra_cartel,0,0.0,0.0,0.0714
+duopoly_greedy,cooperative_any (CI >= 0.20),0,0.0,0.0,0.0714
+triopoly_tail,predatory,0,0.0,0.0,0.0714
+triopoly_tail,nash_like,0,0.0,0.0,0.0714
+triopoly_tail,partial_collusion,41,0.82,0.692,0.9023
+triopoly_tail,supra_cartel,9,0.18,0.0977,0.308
+triopoly_tail,cooperative_any (CI >= 0.20),50,1.0,0.9286,1.0
+duopoly_tail,predatory,41,0.82,0.692,0.9023
+duopoly_tail,nash_like,9,0.18,0.0977,0.308
+duopoly_tail,partial_collusion,0,0.0,0.0,0.0714
+duopoly_tail,supra_cartel,0,0.0,0.0,0.0714
+duopoly_tail,cooperative_any (CI >= 0.20),0,0.0,0.0,0.0714

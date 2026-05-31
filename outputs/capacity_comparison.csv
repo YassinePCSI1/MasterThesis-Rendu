@@ -1,0 +1,3 @@
+regime,nash_price,nash_total_q,cartel_price,cartel_total_q,delta_star_binding,binding_player,hhi,nash_q_US,nash_profit_US,cartel_q_US,delta_star_US,nash_q_OPEC,nash_profit_OPEC,cartel_q_OPEC,delta_star_OPEC,nash_q_RUS,nash_profit_RUS,cartel_q_RUS,delta_star_RUS
+unconstrained,60.0,80.0,80.0,60.0,0.5294,OPEC,3828.12,15.0,225.0,11.25,0.4552,40.0,1600.0,30.0,0.5294,25.0,625.0,18.75,0.4406
+constrained,60.0,80.0,87.5,52.5,0.6875,OPEC,3828.12,15.0,225.0,9.8437,0.5796,40.0,1600.0,26.25,0.6875,25.0,625.0,16.4062,0.5795

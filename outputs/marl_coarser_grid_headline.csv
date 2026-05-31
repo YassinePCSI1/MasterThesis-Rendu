@@ -1,0 +1,2 @@
+n_seeds,fine_cells_per_agent,coarse_cells_per_agent,mean_tail_ci,std_tail_ci,tail_ci_95_low,tail_ci_95_high,mean_greedy_ci,std_greedy_ci,greedy_ci_95_low,greedy_ci_95_high,mean_converged_price,std_converged_price,mean_q_undervisited_pct,mean_q_visit_mean,min_q_visit_min
+10,2145,800,0.4911,0.2736,0.3215,0.6607,0.5631,0.5647,0.213,0.9131,69.8221,5.4729,0.6583,93.75,0

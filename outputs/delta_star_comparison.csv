@@ -1,0 +1,4 @@
+player,delta_star_deterministic,delta_star_stochastic_AR1,alpha_AR1,delta_actual,sustainable
+US,0.4552,0.5997,0.1151,0.95,True
+OPEC,0.5294,0.5997,0.1151,0.95,True
+RUS,0.4406,0.5997,0.1151,0.95,True

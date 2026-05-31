@@ -1,0 +1,113 @@
+% Shared preamble for the full thesis
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% Times New Roman family (text + math)
+\usepackage{mathptmx}            % Times text + Times-compatible math
+\usepackage[scaled=0.9]{helvet}  % Helvetica for sans-serif fallback
+\usepackage{courier}
+
+\usepackage[english]{babel}
+\usepackage{microtype}
+
+% Margins: 2.54 cm on every side (= 1 inch)
+\usepackage{geometry}
+\geometry{a4paper,top=2.54cm,bottom=2.54cm,left=2.54cm,right=2.54cm}
+
+% 1.5 line spacing
+\usepackage{setspace}
+\onehalfspacing
+
+\usepackage{amsmath,amssymb,amsthm,mathtools,bm}
+\usepackage{siunitx}
+\sisetup{detect-all,group-separator={,}}
+
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{caption}
+\captionsetup{font=small,labelfont=bf}
+\usepackage{subcaption}
+\usepackage{tabularx}
+\usepackage{float}
+
+% --- Section title sizing: 12pt for all heading levels ---
+\usepackage{titlesec}
+\titleformat{\section}
+  {\normalfont\fontsize{12}{14}\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}
+  {\normalfont\fontsize{12}{14}\bfseries}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}
+  {\normalfont\fontsize{12}{14}\bfseries\itshape}{\thesubsubsection}{1em}{}
+
+% Page break only before Introduction (section 1); sections 2--6 flow continuously.
+\let\oldsection\section
+\renewcommand{\section}{%
+  \ifnum\value{section}=0
+    \clearpage
+  \fi
+  \oldsection
+}
+
+\usepackage[colorlinks=true,linkcolor=black,citecolor=black,
+            urlcolor=black,filecolor=black]{hyperref}
+
+\usepackage[round,authoryear]{natbib}
+\bibliographystyle{elsarticle-harv}
+\renewcommand{\refname}{References}
+\renewcommand{\bibsection}{%
+  \section*{\refname}%
+  \addcontentsline{toc}{section}{\refname}%
+}
+
+\newtheoremstyle{plainbox}{6pt}{6pt}{\itshape}{}{\bfseries}{.}{ }{}
+\theoremstyle{plainbox}
+\newtheorem*{hypothesis*}{Hypothesis}
+\newtheorem*{criterion*}{Pre-registered criterion}
+\newtheorem*{verdict*}{Pre-registered verdict}
+
+% --- Visual reading aids for Section 4 (callout boxes + verdict badges) ---
+\usepackage{pifont}
+\usepackage[most]{tcolorbox}
+
+% Consistent verdict badges, reused in the scorecard, the verdict matrix,
+% and the cross-model synthesis.
+\newcommand{\vyes}{\textcolor{green!55!black}{\ding{51}}}
+\newcommand{\vno}{\textcolor{red!75!black}{\ding{55}}}
+\newcommand{\vpart}{\textcolor{orange!95!black}{\ding{108}}}
+\newcommand{\badgelegend}{%
+  \footnotesize\vyes~met \quad \vpart~partial \quad \vno~rejected}
+
+% "In brief" callout with a fixed Question / Method / Threshold / Verdict
+% template, opening every experimental subsection of Section 4.
+\newtcolorbox{inbrief}{%
+  enhanced, breakable, sharp corners=downhill,
+  colback=gray!5, colframe=gray!55, boxrule=0.5pt,
+  left=6pt, right=6pt, top=3pt, bottom=3pt,
+  fonttitle=\bfseries\small, coltitle=black,
+  title=In brief}
+
+% Notation reminder box (placed once, at the head of Section 4).
+\newtcolorbox{notationbox}{%
+  enhanced, breakable,
+  colback=blue!2, colframe=blue!35, boxrule=0.5pt,
+  left=6pt, right=6pt, top=3pt, bottom=3pt,
+  fonttitle=\bfseries\small, coltitle=black,
+  title=Notation used throughout Section~4}
+
+\newcommand{\CI}{\overline{\mathrm{CI}}}
+% Mean collusion index: use \CI^{\text{tail}} or \CI^{\text{greedy}} for
+% estimator-specific values; use \CI_{\text{trio}} etc.\ for regime labels.
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\Exp}{\mathbb{E}}
+\newcommand{\given}{\,\vert\,}
+
+% Clickable appendix references (entire ``Appendix~X'' is one link).
+\newcommand{\appref}[1]{\hyperref[#1]{Appendix~\ref*{#1}}}
+
+% Figures live in outputs/ relative to thesis/ directory
+\graphicspath{{../outputs/}{../outputs/figures/}{./figures/}}

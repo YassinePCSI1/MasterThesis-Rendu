@@ -1,0 +1,5 @@
+episode,description,trigger,expected_mechanism,historical_pre,historical_trough,historical_drop,historical_drop_pct,historical_duration_quarters,model_pre,model_trough,model_drop,model_drop_pct,model_punishment_length,duration_match,direction_match,magnitude_30pct_match,mechanism_match,overall_match
+1985_opec_price_war,OPEC abandons quotas; Saudi Arabia floods market to punish cheaters,OPEC members exceeded quotas; Saudi opened taps,punishment_regime,28.0,10.0,18.0,0.6429,8,80.0,60.0,20.0,0.25,10,True,True,False,True,False
+2014_opec_market_share,OPEC maintains output despite US shale surge; prices crash,US shale boom eroded OPEC market share; OPEC chose volume over price,stackelberg_shift,110.0,26.0,84.0,0.7636,10,80.0,60.0,20.0,0.25,10,True,True,False,False,False
+2020_russia_saudi_price_war,Russia refuses OPEC+ cuts during COVID demand collapse,COVID demand shock + Russia-Saudi disagreement on cuts,demand_shock_plus_punishment,65.0,20.0,45.0,0.6923,3,80.0,60.0,20.0,0.25,10,False,True,False,True,False
+OVERALL,Aggregate qualitative fit score (0–1),—,—,,,,,,,,,,,,,,,0.5556

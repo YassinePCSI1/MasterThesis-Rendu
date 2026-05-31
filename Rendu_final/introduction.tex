@@ -1,0 +1,124 @@
+\section{Introduction}
+\label{sec:introduction}
+
+Crude oil remains the most systemically consequential commodity in the
+global economy. Despite accelerating investments in renewable capacity,
+petroleum and its derivatives still account for roughly 30 percent of
+primary energy consumption worldwide \citep{iea2025} and anchor the
+fiscal architecture of more than two dozen sovereign states, from the
+Gulf monarchies to Nigeria, from Russia to Venezuela. The transmission
+mechanism is direct: supply disruptions propagate into headline
+inflation, force central bank recalibrations, widen sovereign credit
+spreads, and spill over into equity volatility and foreign-exchange
+markets \citep{kilian2016,barskykilian2004}. The strategic interactions
+among the world's three dominant production blocs: the Organization of
+the Petroleum Exporting Countries (OPEC), US shale producers, and the
+Russian Federation determine not merely the barrel price on trading
+screens, but the macroeconomic trajectory of importing and exporting
+nations alike. Understanding these interactions is a question at the
+nexus of macroeconomics, geopolitics, and financial stability.
+
+The urgency of that question has sharpened dramatically since late
+February 2026. On 28 February, the United States and Israel launched
+strikes against Iran, precipitating the closure of the Strait of Hormuz,
+a 21-mile-wide chokepoint through which approximately 20 percent of
+globally traded petroleum transits under normal conditions
+\citep{crs2026}. The Iranian Revolutionary Guard declared the strait
+closed, attacked merchant vessels, and laid sea mines, reducing shipping
+traffic by more than 90 percent from pre-conflict levels. The EIA reports
+that crude and fuel flows through the strait declined by nearly
+6 million barrels per day in the first quarter of the conflict
+\citep{eia2026}. Brent crude, which traded near \$65/bbl as recently as
+November 2025, surged past \$116/bbl in early May 2026 before settling
+around \$106--108/bbl amid uncertain ceasefire negotiations. Saudi
+Aramco's CEO warned on the company's first-quarter earnings call that
+the market is losing roughly 100 million barrels of supply per week and
+that normalisation could extend into 2027 if the strait remains blocked
+past mid-June \citep{cnbc2026}. The International Energy Agency (IEA)
+has cautioned that global observed inventories fell at a record pace of
+approximately 4 million barrels per day in March and April, and that the
+market could remain severely undersupplied until October even if the
+conflict ends next month \citep{iea2026omr}.
+
+Superimposed on this acute supply shock is a structural fracture in
+cartel governance. The United Arab Emirates (UAE) notified OPEC of its
+decision to withdraw from OPEC and OPEC+ on 28 April 2026, with the exit
+taking effect on 1 May 2026, after fifty-nine years of membership, the
+most significant departure in the organisation's history
+\citep{emirates2026}. The UAE's decision followed years of
+friction over quota allocations that held its production roughly
+30 percent below its 4.85 million barrel-per-day capacity
+\citep{woodmac2026}. Abu Dhabi's exit follows Angola's departure in 2024
+and Qatar's in 2019, establishing a pattern of defection that game theory
+predicts with precision: when the temptation payoff from unilateral
+expansion exceeds the discounted value of continued cooperation, the
+cartel unravels \citep{fudenbergmaskin1986}. On the opposing flank of
+supply, the US shale sector is approaching a structural plateau. The
+EIA's \emph{Annual Energy Outlook 2026} projects that US crude
+production will decline from its 2025 record of 13.6 million barrels per
+day, as mature plays exhibit declining well productivity and capital
+discipline continues to prioritize shareholder returns over volume
+growth \citep{eia2026aep,dallasfed2026}. Russia, meanwhile, occupies a
+paradoxical position: Western sanctions constrain its investment and
+logistics, yet the Hormuz-induced price spike elevates the very revenue
+those sanctions were designed to suppress \citep{ft2026}.
+
+This paper investigates these strategic interactions through a
+progressive computational framework that integrates classical game
+theory with modern reinforcement learning. We pursue four interlocking
+questions. First, what are the equilibrium outcomes of strategic
+quantity competition among asymmetric oil producers under alternative
+market structures? Second, can tacit collusion be sustained, and under
+what conditions of patience, monitoring, and demand uncertainty does it
+survive or collapse? Third, and this is the central empirical
+contribution, does tacit collusion emerge spontaneously when autonomous
+agents learn production strategies through trial and error, without
+programmed coordination, without knowledge of the demand model, and
+observing only the market price? Fourth, which production strategies
+survive evolutionary selection in a population of heterogeneous
+producers?
+
+We construct an original Python codebase calibrated to a stylized
+oil-market model with linear inverse demand $P(Q) = 140 - Q$ and
+asymmetric marginal costs reflecting the structural heterogeneity among
+US shale (\$45/bbl, consistent with the Dallas Fed Energy Survey
+Q1 2026, \citealp{dallasfed2026}); OPEC (\$20/bbl, reflecting Gulf
+weighted-average lifting costs per BP Statistical Review,
+\citealp{bp2022}); and Russia (\$35/bbl, per IMF Article~IV,
+\citealp{imf2021}).
+
+The analytical pipeline escalates through seven conceptual layers,
+detailed as a sixteen-step reading guide in
+\appref{app:reading-guide}: (i)~static
+Cournot competition establishing the Nash benchmark; (ii)~Stackelberg
+leadership quantifying OPEC's first-mover advantage; (iii)~repeated
+games and the Folk Theorem formalizing cartel sustainability;
+(iv)~Shapley values addressing coalition stability;
+(v)~\citet{greenporter1984} imperfect monitoring under stochastic
+demand; (vi)~single-agent and multi-agent Q-learning under price-only
+observation; and (vii)~evolutionary dynamics via replicator equations.
+Each layer addresses a limitation of the preceding one, and all share a
+common quantitative metric, which is the collusion index, defined as
+\begin{equation}
+\mathrm{CI} \;=\; \frac{P^{\,\text{Converged}} - P^{\,\text{Nash}}}{P^{\,\text{Cartel}} - P^{\,\text{Nash}}},
+\label{eq:ci-intro}
+\end{equation}
+that enables direct cross-framework comparison.
+
+The contribution is threefold. Methodologically, we are, to our
+knowledge, the first to embed multi-agent Q-learning within the
+Green-Porter imperfect monitoring framework and apply it to a
+calibrated energy-market oligopoly, a design that extends the
+Bertrand-focused experiments of \citet{calvano2020} to Cournot quantity
+competition with asymmetric costs. Empirically, we provide computational
+evidence that tacit collusion is an emergent property of autonomous
+production-setting agents, with the collusion index varying
+systematically with the discount factor, exploration rate, and learning
+rate in directions consistent with the Folk Theorem's predictions. For
+policy, these findings speak directly to the accelerating regulatory
+debate around algorithmic collusion: California's AB 325, effective
+January 2026, targets algorithms that facilitate price alignment
+\citep{dlapiper2025}; the European Commission has confirmed multiple
+active investigations into algorithmic pricing \citep{nortonrose2025,loyensloeff2026};
+and the US Department of Justice has warned of the risk of ``fully
+automated cartels'' \citep{kavanagh2025}.
